@@ -170,7 +170,6 @@ if __name__ == "__main__":
 
     plotter(ax, xpredict, ypredict, yvar, color="g", style="-")
     plt.savefig("lorenz.png")
-    plt.show()
 
 
 # if __name__ == "__main__":
