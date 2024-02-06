@@ -74,6 +74,7 @@ class ODE:
     def seir(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
         """SEIR system."""
         raise NotImplementedError("This is a work in progress")
+        print("I will come back to this code later")
         # Utils.check_parameters(params, ["sigma", "rho", "beta"])
         # Utils.check_dimension(y, 3)
 
