@@ -70,7 +70,21 @@ class ODE:
                 params["b"] + y[2] * (y[0] - params["c"]),
             ]
         )
+    @staticmethod
+    def seir(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
+        """SEIR system."""
+        raise NotImplementedError("This is a work in progress")
+        # Utils.check_parameters(params, ["sigma", "rho", "beta"])
+        # Utils.check_dimension(y, 3)
 
+        # return np.array(
+        #     [
+        #         params["sigma"] * (y[1] - y[0]),
+        #         y[0] * (params["rho"] - y[2]) - y[1],
+        #         y[0] * y[1] - params["beta"] * y[2],
+        #     ]
+        # )
 
 if __name__ == "__main__":
-    print(ODE.lorenz(0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}))
+    # print(ODE.lorenz(0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}))
+    print(ODE.seir(0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}))
