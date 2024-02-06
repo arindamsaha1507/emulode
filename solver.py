@@ -148,7 +148,7 @@ if __name__ == "__main__":
     _, ax = plt.subplots()
     # Step.plot(ax)
 
-    xdata, ydata = create_data((0, 30), 30, solver)
+    xdata, ydata = create_data((0, 30), 3, solver)
 
     xdata = xdata[:, None]
     ydata = ydata.reshape(-1, 1)
@@ -162,7 +162,7 @@ if __name__ == "__main__":
     all_layer = dgpsi.combine(layer1, layer2, layer3)
 
     model = dgpsi.dgp(xdata, [ydata], all_layer)
-    model.train(1000)
+    model.train(500)#(1000)
 
     emulator = dgpsi.emulator(model.estimate())
     xpredict = np.linspace(0, 30, 300)[:, None].reshape(-1, 1)
