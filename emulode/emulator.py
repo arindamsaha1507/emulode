@@ -6,9 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import dgpsi
 
-from ode import ODE
-from solver import Solver
-from utils import create_data, plotter
+from emulode.ode import ODE
+from emulode.solver import Solver
+from emulode.utils import create_data, plotter
 
 
 @dataclass
@@ -114,4 +114,4 @@ if __name__ == "__main__":
         style="-",
     )
 
-    plt.savefig("emulator.png")
+    plt.savefig("plots/emulator.png")

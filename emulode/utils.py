@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 if TYPE_CHECKING:
-    from solver import Solver
+    from emulode.solver import Solver
 
 
 def plotter(
