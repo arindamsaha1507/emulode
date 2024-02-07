@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 import dgpsi
 
 from ode import ODE
-from solver import Solver, create_data, plotter
+from solver import Solver
+from utils import create_data, plotter
 
 
 @dataclass
