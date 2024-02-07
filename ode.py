@@ -76,7 +76,7 @@ class ODE:
         # raise NotImplementedError("This is a work in progress")
         # print("I will come back to this code later")
 
-        Utils.check_parameters(params, ["PI", "beta", "sigma", "gamma", "epsilon", "alpha"])
+        Utils.check_parameters(params, ["PI","mu", "beta", "sigma", "gamma", "epsilon", "alpha"])
         Utils.check_dimension(y, 4)
         N=y[0]+y[1]+y[2]+y[3] #total population
         return np.array(
@@ -93,7 +93,7 @@ class ODE:
         # raise NotImplementedError("This is a work in progress")
         # print("I will come back to this code later")
 
-        Utils.check_parameters(params, ["PI", "beta", "sigma", "gamma", "epsilon", "alpha"])
+        Utils.check_parameters(params, ["PI","mu", "beta", "sigma", "gamma", "epsilon", "alpha"])
         Utils.check_dimension(y, 4)
         return np.array(
             [
@@ -109,8 +109,8 @@ class ODE:
         # raise NotImplementedError("This is a work in progress")
         # print("I will come back to this code later")
 
-        Utils.check_parameters(params, ["PI", "beta", "sigma", "gamma", "epsilon", "alpha"])
-        Utils.check_dimension(y, 4)
+        Utils.check_parameters(params, ["PIB","PIM", "muB","muM","beta", "gamma", "epsilon"])
+        Utils.check_dimension(y, 5)
         N=y[0]+y[1]+y[2] #total population
         return np.array(
             [
@@ -141,4 +141,4 @@ class ODE:
         # )
 if __name__ == "__main__":
     # print(ODE.lorenz(0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}))
-    print(ODE.seir(0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}))
+    print(ODE.seir_dens_vacc(0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}))
