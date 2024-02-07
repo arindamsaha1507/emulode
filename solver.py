@@ -109,9 +109,11 @@ def plotter(
 
     if yvar is not None:
         yvar = yvar.flatten()
-        ax.errorbar(xdata, ydata, yerr=yvar, fmt=color + style)
-    else:
         ax.plot(xdata, ydata, color + style)
+        ax.fill_between(xdata, ydata - yvar, ydata + yvar, color=color, alpha=0.3)
+        # ax.errorbar(xdata, ydata, yerr=yvar, fmt=color + style)
+    else:
+        ax.scatter(xdata, ydata, color=color, marker=style)
 
 
 def create_data(
