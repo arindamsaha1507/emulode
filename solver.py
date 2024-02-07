@@ -2,15 +2,9 @@
 
 from typing import Callable
 
-import time
-import dgpsi
 import numpy as np
 from dataclasses import dataclass, field
 from scipy.integrate import solve_ivp
-
-from ode import ODE
-
-from matplotlib import pyplot as plt
 
 
 @dataclass
@@ -92,40 +86,3 @@ class Solver:
 
         self.solve()
         return self.quantity_of_interest(self.results)
-
-
-def plotter(
-    ax: plt.Axes,
-    xdata: np.ndarray,
-    ydata: np.ndarray,
-    yvar: np.ndarray = None,
-    color: str = "k",
-    style: str = "-",
-) -> None:
-    """Plot the given data."""
-
-    xdata = xdata.flatten()
-    ydata = ydata.flatten()
-
-    if yvar is not None:
-        yvar = yvar.flatten()
-        ax.errorbar(xdata, ydata, yerr=yvar, fmt=color + style)
-    else:
-        ax.plot(xdata, ydata, color + style)
-
-
-def create_data(
-    param_range: tuple[float, float], num_points: int, solver: Solver
-) -> tuple[np.ndarray, np.ndarray]:
-    """Create data for the given solver."""
-
-    time_start = time.time()
-
-    x = np.linspace(param_range[0], param_range[1], num_points)
-    y = np.array([solver.evaluate_at_point(xi) for xi in x])
-
-    time_end = time.time()
-
-    print(f"Time taken: {time_end - time_start:.2f} seconds")
-
-    return x, y
