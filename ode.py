@@ -45,6 +45,8 @@ class ODE:
     def lorenz(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
         """Lorenz system."""
 
+        # pylint: disable=unused-argument
+
         Utils.check_parameters(params, ["sigma", "rho", "beta"])
         Utils.check_dimension(y, 3)
 
@@ -59,6 +61,8 @@ class ODE:
     @staticmethod
     def rossler(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
         """Rossler system."""
+
+        # pylint: disable=unused-argument
 
         Utils.check_parameters(params, ["a", "b", "c"])
         Utils.check_dimension(y, 3)

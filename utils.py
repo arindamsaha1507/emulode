@@ -22,6 +22,8 @@ def plotter(
 ) -> None:
     """Plot the given data."""
 
+    # pylint: disable=too-many-arguments
+
     xdata = xdata.flatten()
     ydata = ydata.flatten()
 

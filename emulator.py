@@ -13,6 +13,9 @@ from utils import create_data, plotter
 
 @dataclass
 class Emulator:
+    """Class for the emulator."""
+
+    # pylint: disable=too-many-instance-attributes
 
     x_train: np.ndarray
     y_train: np.ndarray
@@ -70,12 +73,12 @@ class Emulator:
     def predict(self) -> None:
         """Predict the emulator output."""
 
-        emulator = dgpsi.emulator(self.model.estimate())
+        emul = dgpsi.emulator(self.model.estimate())
 
         self.x_predict = np.linspace(
             self.x_train.min(), self.x_train.max(), self.num_predict
         )[:, None].reshape(-1, 1)
-        self.y_predict, self.y_var = emulator.predict(self.x_predict)
+        self.y_predict, self.y_var = emul.predict(self.x_predict)
 
 
 if __name__ == "__main__":
@@ -89,12 +92,9 @@ if __name__ == "__main__":
         0.1,
     )
 
-    max_func = lambda x: np.max(x[0, :])
-
-    solver.set_varying_settings("rho", max_func)
+    solver.set_varying_settings("rho", lambda x: np.max(x[0, :]))
 
     _, ax = plt.subplots()
-    # Step.plot(ax)
 
     xdata, ydata = create_data((0, 30), 10, solver)
 

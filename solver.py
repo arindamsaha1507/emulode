@@ -1,15 +1,17 @@
 """Module for Solving ODEs."""
 
+from dataclasses import dataclass, field
 from typing import Callable
 
 import numpy as np
-from dataclasses import dataclass, field
 from scipy.integrate import solve_ivp
 
 
 @dataclass
 class Solver:
     """Class for solving ODEs."""
+
+    # pylint: disable=too-many-instance-attributes
 
     ode: Callable[[float, np.ndarray, dict[str, float]], np.ndarray]
     params: dict[str, float]
