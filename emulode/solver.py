@@ -1,21 +1,17 @@
 """Module for Solving ODEs."""
 
+from dataclasses import dataclass, field
 from typing import Callable
 
-import time
-import dgpsi
 import numpy as np
-from dataclasses import dataclass, field
 from scipy.integrate import solve_ivp
-
-from ode import ODE
-
-from matplotlib import pyplot as plt
 
 
 @dataclass
 class Solver:
     """Class for solving ODEs."""
+
+    # pylint: disable=too-many-instance-attributes
 
     ode: Callable[[float, np.ndarray, dict[str, float]], np.ndarray]
     params: dict[str, float]
@@ -92,86 +88,3 @@ class Solver:
 
         self.solve()
         return self.quantity_of_interest(self.results)
-
-
-def plotter(
-    ax: plt.Axes,
-    xdata: np.ndarray,
-    ydata: np.ndarray,
-    yvar: np.ndarray = None,
-    color: str = "k",
-    style: str = "-",
-) -> None:
-    """Plot the given data."""
-
-    xdata = xdata.flatten()
-    ydata = ydata.flatten()
-
-    if yvar is not None:
-        yvar = yvar.flatten()
-        ax.errorbar(xdata, ydata, yerr=yvar, fmt=color + style)
-    else:
-        ax.plot(xdata, ydata, color + style)
-
-
-def create_data(
-    param_range: tuple[float, float], num_points: int, solver: Solver
-) -> tuple[np.ndarray, np.ndarray]:
-    """Create data for the given solver."""
-
-    time_start = time.time()
-
-    x = np.linspace(param_range[0], param_range[1], num_points)
-    y = np.array([solver.evaluate_at_point(xi) for xi in x])
-
-    time_end = time.time()
-
-    print(f"Time taken: {time_end - time_start:.2f} seconds")
-
-    return x, y
-
-
-if __name__ == "__main__":
-    solver = Solver(
-        ODE.lorenz,
-        {"sigma": 10, "rho": 28, "beta": 8 / 3},
-        np.array([1, 2, 3]),
-        (0, 100),
-        1000,
-        0.1,
-    )
-
-    max_func = lambda x: np.max(x[0, :])
-
-    solver.set_varying_settings("rho", max_func)
-
-    _, ax = plt.subplots()
-    # Step.plot(ax)
-
-    xdata, ydata = create_data((0, 30), 3, solver)
-
-    xdata = xdata[:, None]
-    ydata = ydata.reshape(-1, 1)
-
-    plotter(ax, xdata, ydata, color="r", style="o")
-
-    layer1 = [dgpsi.kernel(length=np.array([1.0]), name="sexp")]
-    layer2 = [dgpsi.kernel(length=np.array([1.0]), name="sexp")]
-    layer3 = [dgpsi.kernel(length=np.array([1.0]), name="sexp", scale_est=True)]
-
-    all_layer = dgpsi.combine(layer1, layer2, layer3)
-
-    model = dgpsi.dgp(xdata, [ydata], all_layer)
-    model.train(500)#(1000)
-
-    emulator = dgpsi.emulator(model.estimate())
-    xpredict = np.linspace(0, 30, 300)[:, None].reshape(-1, 1)
-    ypredict, yvar = emulator.predict(xpredict)
-
-    plotter(ax, xpredict, ypredict, yvar, color="g", style="-")
-    plt.savefig("lorenz.png")
-    plt.show()
-
-
-# if __name__ == "__main__":
-#     main()

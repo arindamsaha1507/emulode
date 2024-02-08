@@ -1,0 +1,76 @@
+"""Module for the emulator class"""
+
+from dataclasses import dataclass, field
+
+import numpy as np
+import dgpsi
+
+
+@dataclass
+class Emulator:
+    """Class for the emulator."""
+
+    # pylint: disable=too-many-instance-attributes
+
+    x_train: np.ndarray
+    y_train: np.ndarray
+
+    num_layers: int
+    num_predict: int
+    num_training_iterations: int
+
+    model: dgpsi.dgp = field(init=False)
+    x_predict: np.ndarray = field(init=False)
+    y_predict: np.ndarray = field(init=False)
+    y_var: np.ndarray = field(init=False)
+
+    def __post_init__(self) -> None:
+        """Check that the given parameters are valid."""
+
+        if self.num_layers <= 0:
+            raise ValueError("num_layers must be positive")
+
+        if self.num_predict <= 0:
+            raise ValueError("num_predict must be positive")
+
+        if self.num_training_iterations <= 0:
+            raise ValueError("num_training_iterations must be positive")
+
+        self.create_model()
+        self.predict()
+
+    def create_layer(self, scale_est: bool = False) -> list[dgpsi.kernel]:
+        """Create single layer of the emulator."""
+
+        return [dgpsi.kernel(length=np.array([1.0]), scale_est=scale_est)]
+
+    def create_all_layers(self) -> list:
+        """Create all layers of the emulator."""
+
+        layers = []
+
+        for idx in range(self.num_layers):
+            if idx == self.num_layers - 1:
+                layers.append(self.create_layer(scale_est=True))
+            else:
+                layers.append(self.create_layer())
+
+        return dgpsi.combine(*layers)
+
+    def create_model(self) -> None:
+        """Create the emulator model."""
+
+        layers = self.create_all_layers()
+
+        self.model = dgpsi.dgp(self.x_train, [self.y_train], layers)
+        self.model.train(self.num_training_iterations)
+
+    def predict(self) -> None:
+        """Predict the emulator output."""
+
+        emul = dgpsi.emulator(self.model.estimate())
+
+        self.x_predict = np.linspace(
+            self.x_train.min(), self.x_train.max(), self.num_predict
+        )[:, None].reshape(-1, 1)
+        self.y_predict, self.y_var = emul.predict(self.x_predict)
