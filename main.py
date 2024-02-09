@@ -37,11 +37,14 @@ emulator = Emulator(simulator.xdata, simulator.ydata, 3, 1000, 500)
 
 Plotter.create_combined_plot(
     "plots/emulator.png",
-    "c",
-    "Max(x_1)",
+    "time",
+    "x",
     simulator.xdata,
     simulator.ydata,
     emulator.x_predict,
     emulator.y_predict,
     emulator.y_var,
+    scale=20,
+    x_ideal=np.linspace(0, 20, len(solver.results[0, :])),
+    y_ideal=solver.results[0, :],
 )
