@@ -1,12 +1,12 @@
 """Main module for the application."""
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from emulode.solver import Solver
-from emulode.utils import create_data, plotter
 from emulode.emulator import Emulator
 from emulode.ode import ODE
+from emulode.plotter import Plotter
+from emulode.simulator import Simulator
 
 solver = Solver(
     ODE.lorenz,
@@ -17,26 +17,17 @@ solver = Solver(
     0.1,
 )
 
-solver.set_varying_settings("rho", lambda x: np.max(x[0, :]))
+simulator = Simulator(solver, "rho", 0, 30, 10, lambda x: np.max(x[0, :]))
 
-_, ax = plt.subplots()
+emulator = Emulator(simulator.xdata, simulator.ydata, 3, 1000, 500)
 
-xdata, ydata = create_data((0, 30), 10, solver)
-
-xdata = xdata[:, None]
-ydata = ydata.reshape(-1, 1)
-
-plotter(ax, xdata, ydata, color="r", style="o")
-
-emulator = Emulator(xdata, ydata, 3, 1000, 500)
-
-plotter(
-    ax,
+Plotter.create_combined_plot(
+    "plots/emulator.png",
+    "rho",
+    "Max(x_1)",
+    simulator.xdata,
+    simulator.ydata,
     emulator.x_predict,
     emulator.y_predict,
     emulator.y_var,
-    color="b",
-    style="-",
 )
-
-plt.savefig("plots/emulator.png")
