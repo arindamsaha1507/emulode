@@ -54,6 +54,8 @@ class Plotter:
     ) -> plt.Figure:
         """Create a combined plot of the given data."""
 
+        # pylint: disable=too-many-arguments
+
         fig, ax = plt.subplots()
 
         Plotter.plotter(ax, xdata, ydata, color=data_color, style=data_style)

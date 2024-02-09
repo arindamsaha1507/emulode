@@ -14,6 +14,8 @@ from emulode.solver import Solver
 class Simulator:
     """Class for the simulator."""
 
+    # pylint: disable=too-many-instance-attributes
+
     solver: Solver
     varying_parameter: str
     parameter_start: float
