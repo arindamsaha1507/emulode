@@ -1,24 +1,15 @@
 """Module for plotting data"""
 
-from dataclasses import dataclass, field
-
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-@dataclass
 class Plotter:
     """Class for plotting data"""
 
-    fig: plt.Figure = field(init=False)
-    ax: plt.Axes = field(init=False)
-
-    def __post_init__(self) -> None:
-        """Create a new figure and axis."""
-        self.fig, self.ax = plt.subplots()
-
+    @staticmethod
     def plotter(
-        self,
+        ax: plt.Axes,
         xdata: np.ndarray,
         ydata: np.ndarray,
         yvar: np.ndarray = None,
@@ -34,13 +25,41 @@ class Plotter:
 
         if yvar is not None:
             yvar = yvar.flatten()
-            self.ax.plot(xdata, ydata, color + style)
-            self.ax.fill_between(
-                xdata, ydata - yvar, ydata + yvar, color=color, alpha=0.3
-            )
+            ax.plot(xdata, ydata, color + style)
+            ax.fill_between(xdata, ydata - yvar, ydata + yvar, color=color, alpha=0.3)
         else:
-            self.ax.scatter(xdata, ydata, color=color, marker=style)
+            ax.scatter(xdata, ydata, color=color, marker=style)
 
-    def savefig(self, filename: str) -> None:
+    @staticmethod
+    def savefig(fig: plt.Figure, filename: str) -> None:
         """Save the figure to a file."""
-        self.fig.savefig(filename)
+        fig.savefig(filename)
+
+    @staticmethod
+    def create_combined_plot(
+        file: str,
+        xlabel: str,
+        ylabel: str,
+        xdata: np.ndarray,
+        ydata: np.ndarray,
+        x_predict: np.ndarray,
+        y_predict: np.ndarray,
+        y_var: np.ndarray,
+        data_color: str = "r",
+        predict_color: str = "b",
+        data_style: str = "o",
+        predict_style: str = "-",
+    ) -> plt.Figure:
+        """Create a combined plot of the given data."""
+
+        fig, ax = plt.subplots()
+
+        Plotter.plotter(ax, xdata, ydata, color=data_color, style=data_style)
+        Plotter.plotter(
+            ax, x_predict, y_predict, y_var, color=predict_color, style=predict_style
+        )
+
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+
+        Plotter.savefig(fig, file)
