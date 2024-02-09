@@ -59,6 +59,7 @@ class Plotter:
         """Create a combined plot of the given data."""
 
         # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-locals
 
         fig, ax = plt.subplots()
 
