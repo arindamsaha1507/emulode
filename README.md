@@ -9,3 +9,5 @@
 ## Structure of the workfow
 
 There are four fundamental components for the workflow of the code. These are implemented as four high level classes.
+
+![Workflow](emulode.drawio.svg)
