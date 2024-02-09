@@ -17,6 +17,10 @@ solver = Solver(
     0.1,
 )
 
+solver.solve()
+solver.phase_plot(components=(0, 1))
+solver.timeseries_plot(component=0)
+
 simulator = Simulator(solver, "rho", 0, 30, 10, lambda x: np.max(x[0, :]))
 
 emulator = Emulator(simulator.xdata, simulator.ydata, 3, 1000, 500)

@@ -6,6 +6,8 @@ from typing import Callable
 import numpy as np
 from scipy.integrate import solve_ivp
 
+from emulode.plotter import Plotter
+
 
 @dataclass
 class Solver:
@@ -88,3 +90,25 @@ class Solver:
 
         self.solve()
         return self.quantity_of_interest(self.results)
+
+    def phase_plot(
+        self, components: tuple[int, int], filename: str = "plots/phase.png"
+    ) -> None:
+        """Plot the results."""
+        Plotter.create_basic_plot(
+            self.results[components[0], :],
+            self.results[components[1], :],
+            filename=filename,
+        )
+
+    def timeseries_plot(
+        self, component: int, filename: str = "plots/timeseries.png"
+    ) -> None:
+        """Plot the results."""
+        time = np.linspace(self.t_initial, self.t_final, self.t_steps)
+        time = time[: len(self.results[component, :])]
+        Plotter.create_basic_plot(
+            time,
+            self.results[component, :],
+            filename=filename,
+        )

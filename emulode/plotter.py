@@ -13,8 +13,8 @@ class Plotter:
         xdata: np.ndarray,
         ydata: np.ndarray,
         yvar: np.ndarray = None,
-        color: str = "k",
-        style: str = "-",
+        color: str = None,
+        style: str = None,
     ) -> None:
         """Plot the given data."""
 
@@ -27,6 +27,8 @@ class Plotter:
             yvar = yvar.flatten()
             ax.plot(xdata, ydata, color + style)
             ax.fill_between(xdata, ydata - yvar, ydata + yvar, color=color, alpha=0.3)
+        elif style == "-":
+            ax.plot(xdata, ydata, color=color, linestyle=style)
         else:
             ax.scatter(xdata, ydata, color=color, marker=style)
 
@@ -63,3 +65,14 @@ class Plotter:
         ax.set_ylabel(ylabel)
 
         Plotter.savefig(fig, file)
+
+    @staticmethod
+    def create_basic_plot(
+        xdata: np.ndarray, ydata: np.ndarray, filename: str = "plots/basic.png"
+    ) -> plt.Figure:
+        """Create a basic plot of the given data."""
+
+        fig, ax = plt.subplots()
+
+        Plotter.plotter(ax, xdata, ydata, style="-")
+        Plotter.savefig(fig, filename=filename)
