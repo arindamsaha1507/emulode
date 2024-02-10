@@ -1,4 +1,4 @@
-<img src="emulode_logo.webp" alt="drawing" width="200"/>
+<img src="assets/emulode_logo.webp" alt="drawing" width="200"/>
 
 # Emulode: Emulating Ordinary Differential Equations
 
@@ -10,4 +10,4 @@
 
 There are four fundamental components for the workflow of the code. These are implemented as four high level classes.
 
-![Workflow](emulode.drawio.svg)
+![Workflow](assets/emulode.drawio.svg)
