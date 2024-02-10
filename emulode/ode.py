@@ -91,14 +91,14 @@ class ODE:
             params, ["PI", "mu", "beta", "sigma", "gamma", "epsilon", "alpha"]
         )
         Utils.check_dimension(y, 4)
-        N = y[0] + y[1] + y[2] + y[3]  # total population
+        total_population = y[0] + y[1] + y[2] + y[3]  # total population
         return np.array(
             [
                 params["PI"]
-                - params["beta"] * y[1] * y[0] / N
+                - params["beta"] * y[1] * y[0] / total_population
                 - params["mu"] * y[0]
                 + params["alpha"] * y[3],
-                params["beta"] * y[1] * y[0] / N
+                params["beta"] * y[1] * y[0] / total_population
                 - -params["sigma"] * y[1]
                 - params["mu"] * y[1],
                 params["sigma"] * y[1] - params["gamma"] * y[2] - params["mu"] * y[2],
@@ -154,16 +154,20 @@ class ODE:
             params, ["PIB", "PIM", "muB", "muM", "beta", "gamma", "epsilon"]
         )
         Utils.check_dimension(y, 5)
-        N = y[0] + y[1] + y[2]  # total population
+        total_population = y[0] + y[1] + y[2]
         return np.array(
             [
-                params["PIB"] - params["beta"] * y[4] * y[0] / N - params["muB"] * y[0],
-                params["beta"] * y[4] * y[0] / N
+                params["PIB"]
+                - params["beta"] * y[4] * y[0] / total_population
+                - params["muB"] * y[0],
+                params["beta"] * y[4] * y[0] / total_population
                 - params["gamma"] * y[1]
                 - params["muB"] * y[1],
                 params["gamma"] * (1 - params["epsilon"]) * y[2] - params["muB"] * y[2],
-                params["PIM"] - params["beta"] * y[1] * y[3] / N - params["muM"] * y[3],
-                params["beta"] * y[1] * y[3] / N - params["muM"] * y[1],
+                params["PIM"]
+                - params["beta"] * y[1] * y[3] / total_population
+                - params["muM"] * y[3],
+                params["beta"] * y[1] * y[3] / total_population - params["muM"] * y[1],
             ]
         )
 
@@ -179,7 +183,8 @@ class ODE:
         #         params["PI"]-params["beta"] * y[1]*y[0]- params["mu"]*y[0]+params["alpha"]*y[3],
         #         params["beta"] * y[1]*y[0] - -params["sigma"]*y[1]-params["mu"]*y[1],
         #         params["sigma"]*y[1]-params["gamma"]*y[2]-params["mu"]*y[2],
-        #         params["gamma"]*(1-params["epsilon"])*y[2] - params["mu"] * y[3]-params["alpha"]*y[3],
+        #         params["gamma"]*(1-params["epsilon"])*y[2]
+        #       - params["mu"] * y[3]-params["alpha"]*y[3],
         #     ]
         # )
 
