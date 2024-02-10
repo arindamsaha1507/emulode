@@ -6,7 +6,8 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/arindamsaha1507/ode_dgp)
 ![GitHub last commit](https://img.shields.io/github/last-commit/arindamsaha1507/ode_dgp)
 
+## Structure of the workfow
 
+There are four fundamental components for the workflow of the code. These are implemented as four high level classes.
 
-
-This is a work in progress.
+![Workflow](emulode.drawio.svg)

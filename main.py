@@ -1,42 +1,50 @@
 """Main module for the application."""
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from emulode.solver import Solver
-from emulode.utils import create_data, plotter
 from emulode.emulator import Emulator
 from emulode.ode import ODE
+from emulode.plotter import Plotter
+from emulode.simulator import Simulator
 
 solver = Solver(
-    ODE.lorenz,
-    {"sigma": 10, "rho": 28, "beta": 8 / 3},
-    np.array([1, 2, 3]),
+    ODE.rossler,
+    {"a": 0.2, "b": 0.2, "c": 5.7},
+    np.array([1, 1, 1]),
     (0, 100),
     1000,
-    0.1,
+    0.8,
 )
 
-solver.set_varying_settings("rho", lambda x: np.max(x[0, :]))
+# solver = Solver(
+#     ODE.lorenz,
+#     {"sigma": 10, "rho": 28, "beta": 8 / 3},
+#     np.array([1, 2, 3]),
+#     (0, 100),
+#     1000,
+#     0.1,
+# )
 
-_, ax = plt.subplots()
+solver.solve()
+solver.phase_plot(components=(0, 1))
+solver.timeseries_plot(component=0)
 
-xdata, ydata = create_data((0, 30), 10, solver)
+simulator = Simulator(solver, "t", 0, 1, 20, component_of_interest=0)
+# simulator = Simulator(solver, "c", 5, 10, 10, lambda x: np.max(x[0, :]))
 
-xdata = xdata[:, None]
-ydata = ydata.reshape(-1, 1)
+emulator = Emulator(simulator.xdata, simulator.ydata, 3, 1000, 500)
 
-plotter(ax, xdata, ydata, color="r", style="o")
-
-emulator = Emulator(xdata, ydata, 3, 1000, 500)
-
-plotter(
-    ax,
+Plotter.create_combined_plot(
+    "plots/emulator.png",
+    "time",
+    "x",
+    simulator.xdata,
+    simulator.ydata,
     emulator.x_predict,
     emulator.y_predict,
     emulator.y_var,
-    color="b",
-    style="-",
+    scale=20,
+    x_ideal=np.linspace(0, 20, len(solver.results[0, :])),
+    y_ideal=solver.results[0, :],
 )
-
-plt.savefig("plots/emulator.png")
