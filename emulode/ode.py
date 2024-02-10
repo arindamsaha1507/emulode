@@ -75,6 +75,124 @@ class ODE:
             ]
         )
 
+    @staticmethod
+    def seir_freq(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
+        """
+        SEIR system with frequency depdendent force of infection,
+        demography, disease induced death and loss of immunity.
+        """
+
+        # pylint: disable=unused-argument
+
+        # raise NotImplementedError("This is a work in progress")
+        # print("I will come back to this code later")
+
+        Utils.check_parameters(
+            params, ["PI", "mu", "beta", "sigma", "gamma", "epsilon", "alpha"]
+        )
+        Utils.check_dimension(y, 4)
+        total_population = y[0] + y[1] + y[2] + y[3]  # total population
+        return np.array(
+            [
+                params["PI"]
+                - params["beta"] * y[1] * y[0] / total_population
+                - params["mu"] * y[0]
+                + params["alpha"] * y[3],
+                params["beta"] * y[1] * y[0] / total_population
+                - -params["sigma"] * y[1]
+                - params["mu"] * y[1],
+                params["sigma"] * y[1] - params["gamma"] * y[2] - params["mu"] * y[2],
+                params["gamma"] * (1 - params["epsilon"]) * y[2]
+                - params["mu"] * y[3]
+                - params["alpha"] * y[3],
+            ]
+        )
+
+    @staticmethod
+    def seir_dens(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
+        """
+        SEIR system with density depdendent force of infection,
+        demography, disease induced death and loss of immunity.
+        """
+
+        # pylint: disable=unused-argument
+
+        # raise NotImplementedError("This is a work in progress")
+        # print("I will come back to this code later")
+
+        Utils.check_parameters(
+            params, ["PI", "mu", "beta", "sigma", "gamma", "epsilon", "alpha"]
+        )
+        Utils.check_dimension(y, 4)
+        return np.array(
+            [
+                params["PI"]
+                - params["beta"] * y[1] * y[0]
+                - params["mu"] * y[0]
+                + params["alpha"] * y[3],
+                params["beta"] * y[1] * y[0]
+                - -params["sigma"] * y[1]
+                - params["mu"] * y[1],
+                params["sigma"] * y[1] - params["gamma"] * y[2] - params["mu"] * y[2],
+                params["gamma"] * (1 - params["epsilon"]) * y[2]
+                - params["mu"] * y[3]
+                - params["alpha"] * y[3],
+            ]
+        )
+
+    @staticmethod
+    def sir_si_vb(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
+        """
+        SIR-SI system with frequency depdendent force of infection, demography,
+        disease induced death. This is minimalist model for west-nile virus spread among
+        birds via mosquito bites
+        """
+
+        # pylint: disable=unused-argument
+
+        Utils.check_parameters(
+            params, ["PIB", "PIM", "muB", "muM", "beta", "gamma", "epsilon"]
+        )
+        Utils.check_dimension(y, 5)
+        total_population = y[0] + y[1] + y[2]
+        return np.array(
+            [
+                params["PIB"]
+                - params["beta"] * y[4] * y[0] / total_population
+                - params["muB"] * y[0],
+                params["beta"] * y[4] * y[0] / total_population
+                - params["gamma"] * y[1]
+                - params["muB"] * y[1],
+                params["gamma"] * (1 - params["epsilon"]) * y[2] - params["muB"] * y[2],
+                params["PIM"]
+                - params["beta"] * y[1] * y[3] / total_population
+                - params["muM"] * y[3],
+                params["beta"] * y[1] * y[3] / total_population - params["muM"] * y[1],
+            ]
+        )
+
+    @staticmethod
+    def seir_dens_vacc(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
+        """SEIR system with vaccination, demography, disease induced death and loss of immunity."""
+        raise NotImplementedError("This is a work in progress")
+
+        # Utils.check_parameters(params, ["PI", "beta", "sigma", "gamma", "epsilon", "alpha"])
+        # Utils.check_dimension(y, 4)
+        # return np.array(
+        #     [
+        #         params["PI"]-params["beta"] * y[1]*y[0]- params["mu"]*y[0]+params["alpha"]*y[3],
+        #         params["beta"] * y[1]*y[0] - -params["sigma"]*y[1]-params["mu"]*y[1],
+        #         params["sigma"]*y[1]-params["gamma"]*y[2]-params["mu"]*y[2],
+        #         params["gamma"]*(1-params["epsilon"])*y[2]
+        #       - params["mu"] * y[3]-params["alpha"]*y[3],
+        #     ]
+        # )
+
 
 if __name__ == "__main__":
-    print(ODE.lorenz(0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}))
+    # print(ODE.lorenz(0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}))
+    print(
+        ODE.seir_dens_vacc(
+            0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}
+        )
+    )
