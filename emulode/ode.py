@@ -81,6 +81,9 @@ class ODE:
         SEIR system with frequency depdendent force of infection,
         demography, disease induced death and loss of immunity.
         """
+
+        # pylint: disable=unused-argument
+
         # raise NotImplementedError("This is a work in progress")
         # print("I will come back to this code later")
 
@@ -107,7 +110,13 @@ class ODE:
 
     @staticmethod
     def seir_dens(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
-        """SEIR system with density depdendent force of infection, demography, disease induced death and loss of immunity."""
+        """
+        SEIR system with density depdendent force of infection,
+        demography, disease induced death and loss of immunity.
+        """
+
+        # pylint: disable=unused-argument
+
         # raise NotImplementedError("This is a work in progress")
         # print("I will come back to this code later")
 
@@ -132,10 +141,14 @@ class ODE:
         )
 
     @staticmethod
-    def SIR_SI_VB(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
-        """SIR-SI system with frequency depdendent force of infection, demography, disease induced death. This is minimalist model for west-nile virus spread among birds via mosquito bites"""
-        # raise NotImplementedError("This is a work in progress")
-        # print("I will come back to this code later")
+    def sir_si_vb(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
+        """
+        SIR-SI system with frequency depdendent force of infection, demography,
+        disease induced death. This is minimalist model for west-nile virus spread among
+        birds via mosquito bites
+        """
+
+        # pylint: disable=unused-argument
 
         Utils.check_parameters(
             params, ["PIB", "PIM", "muB", "muM", "beta", "gamma", "epsilon"]
@@ -158,7 +171,6 @@ class ODE:
     def seir_dens_vacc(t: float, y: np.ndarray, params: dict[str, float]) -> np.ndarray:
         """SEIR system with vaccination, demography, disease induced death and loss of immunity."""
         raise NotImplementedError("This is a work in progress")
-        print("I will come back to this code later")
 
         # Utils.check_parameters(params, ["PI", "beta", "sigma", "gamma", "epsilon", "alpha"])
         # Utils.check_dimension(y, 4)
