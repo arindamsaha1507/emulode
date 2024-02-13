@@ -25,8 +25,8 @@ solver:
 
 simulator:
 
-  parameter of interest: t
-  component of interest: 0
+  parameter_of_interest: t
+  component_of_interest: 0
   range: [0, 1]
   n_simulation_points: 30 # Dosent work for 10, Best for 20, Worse for 30
 
