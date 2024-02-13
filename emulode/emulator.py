@@ -8,9 +8,10 @@ import dgpsi
 
 @dataclass
 class Emulator:
-    """Class for the emulator.
+    """
+    Class for the emulator.
 
-    Attributes:
+    Args:
         x_train: The training input data
         y_train: The training output data
         num_layers: The number of layers in the emulator

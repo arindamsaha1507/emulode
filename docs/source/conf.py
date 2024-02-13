@@ -3,6 +3,11 @@
 
 # -- Project information
 
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath("../.."))
+
 project = "Emulode"
 copyright = "2024, Arindam Saha"
 author = "Arindam Saha"
