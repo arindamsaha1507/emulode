@@ -1,5 +1,10 @@
 """Main module for the application."""
 
+import os
+
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+
 import yaml
 
 import numpy as np
@@ -11,49 +16,85 @@ from emulode.plotter import Plotter
 from emulode.simulator import Simulator
 
 
-def run() -> None:
-    """Run the application."""
+def check_keys(config, required_keys: list[str]) -> None:
+    """Check that the given keys are present in the config file."""
 
-    solver = Solver(
-        ODE.rossler,
-        {"a": 0.2, "b": 0.2, "c": 5.7},
-        np.array([1, 1, 1]),
-        (0, 100),
-        1000,
-        0.8,
-    )
+    for key in required_keys:
+        if key not in config:
+            raise KeyError(f"Key '{key}' not found in config file")
 
-    # solver = Solver(
-    #     ODE.lorenz,
-    #     {"sigma": 10, "rho": 28, "beta": 8 / 3},
-    #     np.array([1, 2, 3]),
-    #     (0, 100),
-    #     1000,
-    #     0.1,
-    # )
 
-    solver.solve()
-    solver.phase_plot(components=(0, 1))
-    solver.timeseries_plot(component=0)
+class Config(ABC):
+    """Abstract class for the configuration file."""
 
-    simulator = Simulator(solver, "t", 0, 1, 20, component_of_interest=0)
-    # simulator = Simulator(solver, "c", 5, 10, 10, lambda x: np.max(x[0, :]))
+    def __init__(self, config_dict: dict, required_keys: list[str]) -> None:
 
-    emulator = Emulator(simulator.xdata, simulator.ydata, 3, 1000, 500)
+        # self.config = cofig_dict
+        check_keys(config_dict, required_keys)
 
-    Plotter.create_combined_plot(
-        "plots/emulator.png",
-        "time",
-        "x",
-        simulator.xdata,
-        simulator.ydata,
-        emulator.x_predict,
-        emulator.y_predict,
-        emulator.y_var,
-        scale=20,
-        x_ideal=np.linspace(0, 20, len(solver.results[0, :])),
-        y_ideal=solver.results[0, :],
-    )
+        for key, value in config_dict.items():
+            if key in required_keys:
+                setattr(self, key, value)
+
+    @abstractmethod
+    def validate(self) -> None:
+        """Validate the data."""
+
+    @abstractmethod
+    def __repr__(self) -> str:
+        """Return a string representation of the configuration file."""
+
+
+class ODEConfig(Config):
+    """Class for the ODE configuration file."""
+
+    def __init__(self, config_dict: dict) -> None:
+
+        required_keys = ["chosen_ode", "parameters"]
+        self.chosen_ode = None
+
+        super().__init__(config_dict, required_keys)
+
+        if self.chosen_ode is None:
+            raise ValueError("Chosen ODE not found")
+
+        self.parameters = config_dict["parameters"][self.chosen_ode]
+
+    def validate(self) -> None:
+        """Validate the data."""
+
+        if not isinstance(self.parameters, dict):
+            raise ValueError("Parameters must be a dictionary")
+
+        for key, value in self.parameters.items():
+            if not isinstance(value, (int, float)):
+                raise ValueError(f"Parameter {key} must be a number")
+
+    def __repr__(self) -> str:
+        """Return a string representation of the configuration file."""
+
+        return f"Chosen ODE: {self.chosen_ode}\nParameters: {self.parameters}"
+
+
+def create_ode_config(config_dict: dict) -> Config:
+    """Create a configuration object from the given dictionary."""
+
+    return ODEConfig(config_dict["ode"])
+
+
+def load_config(file_path: str) -> Config:
+    """Load the configuration file from the given path."""
+
+    with open(file_path, "r", encoding="utf-8") as file:
+        config = yaml.safe_load(file)
+
+    return create_ode_config(config)
+
+
+def trial() -> None:
+
+    ode_config = load_config("config.yml")
+    print(ode_config)
 
 
 def main() -> None:
@@ -96,6 +137,8 @@ def main() -> None:
         component_of_interest=component_of_interest,
     )
 
+    # simulator = Simulator(solver, "c", 5, 10, 10, lambda x: np.max(x[0, :]))
+
     print(simulator)
 
     n_layers = config["emulator"]["n_layers"]
@@ -131,5 +174,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
-    # run()
+    # main()
+    trial()
