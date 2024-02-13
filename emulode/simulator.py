@@ -24,8 +24,8 @@ class Simulator:
     function_of_interest: Callable[[np.ndarray], float] = field(default=None)
     component_of_interest: int = field(default=-1)
 
-    xdata: np.ndarray = field(init=False)
-    ydata: np.ndarray = field(init=False)
+    xdata: np.ndarray = field(init=False, repr=False)
+    ydata: np.ndarray = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         """Check that the given parameters are valid."""

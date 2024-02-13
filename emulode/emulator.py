@@ -25,17 +25,17 @@ class Emulator:
 
     # pylint: disable=too-many-instance-attributes
 
-    x_train: np.ndarray
-    y_train: np.ndarray
+    x_train: np.ndarray = field(repr=False)
+    y_train: np.ndarray = field(repr=False)
 
     num_layers: int
     num_predict: int
     num_training_iterations: int
 
     model: dgpsi.dgp = field(init=False)
-    x_predict: np.ndarray = field(init=False)
-    y_predict: np.ndarray = field(init=False)
-    y_var: np.ndarray = field(init=False)
+    x_predict: np.ndarray = field(init=False, repr=False)
+    y_predict: np.ndarray = field(init=False, repr=False)
+    y_var: np.ndarray = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         """Check that the given parameters are valid."""

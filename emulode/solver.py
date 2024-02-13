@@ -22,11 +22,11 @@ class Solver:
     t_steps: int
     transience: int | float
 
-    results: np.ndarray = field(init=False)
+    results: np.ndarray = field(init=False, repr=False)
 
-    parameter_of_interest: str = field(init=False)
-    component_of_interest: int = field(init=False)
-    quantity_of_interest: Callable[[np.ndarray], float] = field(init=False)
+    parameter_of_interest: str = field(init=False, repr=False)
+    component_of_interest: int = field(init=False, repr=False)
+    quantity_of_interest: Callable[[np.ndarray], float] = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         """Check that the given parameters are valid."""
