@@ -16,8 +16,8 @@ ode:
 
 solver:
 
-  t_range: [0, 200]
-  n_steps: 2000
+  t_range: [0, 100]
+  n_steps: 1000
   transience: 0.8
 
   initial_conditions: [1, 1, 1]
@@ -28,7 +28,7 @@ simulator:
   parameter of interest: t
   component of interest: 0
   range: [0, 1]
-  n_simulation_points: 10
+  n_simulation_points: 30 # Dosent work for 10, Best for 20, Worse for 30
 
 
 emulator:
