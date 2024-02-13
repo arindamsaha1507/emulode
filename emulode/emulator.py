@@ -8,7 +8,19 @@ import dgpsi
 
 @dataclass
 class Emulator:
-    """Class for the emulator."""
+    """Class for the emulator.
+
+    Attributes:
+        x_train: The training input data
+        y_train: The training output data
+        num_layers: The number of layers in the emulator
+        num_predict: The number of points to predict
+        num_training_iterations: The number of iterations to train the emulator
+        model: The emulator model
+        x_predict: The input data to predict
+        y_predict: The predicted output data
+        y_var: The variance of the predicted output data
+    """
 
     # pylint: disable=too-many-instance-attributes
 
@@ -40,7 +52,14 @@ class Emulator:
         self.predict()
 
     def create_layer(self, scale_est: bool = False) -> list[dgpsi.kernel]:
-        """Create single layer of the emulator."""
+        """Create single layer of the emulator.
+
+        Args:
+            scale_est: Whether to estimate the scale
+
+        Returns:
+            The layer of the emulator
+        """
 
         return [dgpsi.kernel(length=np.array([1.0]), scale_est=scale_est)]
 

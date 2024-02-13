@@ -3,9 +3,9 @@
 
 # -- Project information
 
-project = "Lumache"
-copyright = "2021, Graziella"
-author = "Graziella"
+project = "Emulode"
+copyright = "2024, Arindam Saha"
+author = "Arindam Saha"
 
 release = "0.1"
 version = "0.1.0"
@@ -18,6 +18,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
 ]
 
 intersphinx_mapping = {
@@ -34,3 +35,6 @@ html_theme = "sphinx_rtd_theme"
 
 # -- Options for EPUB output
 epub_show_urls = "footnote"
+
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False
