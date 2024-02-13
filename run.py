@@ -2,9 +2,6 @@
 
 import os
 
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-
 import yaml
 
 import numpy as np
@@ -14,87 +11,13 @@ from emulode.emulator import Emulator
 from emulode.ode import ODE
 from emulode.plotter import Plotter
 from emulode.simulator import Simulator
-
-
-def check_keys(config, required_keys: list[str]) -> None:
-    """Check that the given keys are present in the config file."""
-
-    for key in required_keys:
-        if key not in config:
-            raise KeyError(f"Key '{key}' not found in config file")
-
-
-class Config(ABC):
-    """Abstract class for the configuration file."""
-
-    def __init__(self, config_dict: dict, required_keys: list[str]) -> None:
-
-        # self.config = cofig_dict
-        check_keys(config_dict, required_keys)
-
-        for key, value in config_dict.items():
-            if key in required_keys:
-                setattr(self, key, value)
-
-    @abstractmethod
-    def validate(self) -> None:
-        """Validate the data."""
-
-    @abstractmethod
-    def __repr__(self) -> str:
-        """Return a string representation of the configuration file."""
-
-
-class ODEConfig(Config):
-    """Class for the ODE configuration file."""
-
-    def __init__(self, config_dict: dict) -> None:
-
-        required_keys = ["chosen_ode", "parameters"]
-        self.chosen_ode = None
-
-        super().__init__(config_dict, required_keys)
-
-        if self.chosen_ode is None:
-            raise ValueError("Chosen ODE not found")
-
-        self.parameters = config_dict["parameters"][self.chosen_ode]
-
-    def validate(self) -> None:
-        """Validate the data."""
-
-        if not isinstance(self.parameters, dict):
-            raise ValueError("Parameters must be a dictionary")
-
-        for key, value in self.parameters.items():
-            if not isinstance(value, (int, float)):
-                raise ValueError(f"Parameter {key} must be a number")
-
-    def __repr__(self) -> str:
-        """Return a string representation of the configuration file."""
-
-        return f"Chosen ODE: {self.chosen_ode}\nParameters: {self.parameters}"
-
-
-def create_ode_config(config_dict: dict) -> Config:
-    """Create a configuration object from the given dictionary."""
-
-    return ODEConfig(config_dict["ode"])
-
-
-def load_config(file_path: str) -> Config:
-    """Load the configuration file from the given path."""
-
-    with open(file_path, "r", encoding="utf-8") as file:
-        config = yaml.safe_load(file)
-
-    return create_ode_config(config)
+from emulode.config import Configs
 
 
 def trial() -> None:
+    """Trial function for the application."""
 
-    ode_config = load_config("config.yml")
-    print(ode_config)
+    print(Configs(os.path.join(os.getcwd(), "config.yml")))
 
 
 def main() -> None:
