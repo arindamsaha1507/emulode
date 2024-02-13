@@ -1,5 +1,6 @@
 """Module for plotting data"""
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -87,6 +88,12 @@ class Plotter:
         ax.set_ylabel(ylabel)
 
         ax.legend()
+
+        directory = file.split("/")[:-1]
+        directory = "/".join(directory)
+
+        if directory:
+            os.makedirs(directory, exist_ok=True)
 
         Plotter.savefig(fig, file)
 
