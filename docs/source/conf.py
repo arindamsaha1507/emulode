@@ -3,9 +3,6 @@
 
 # -- Project information
 
-import os
-import sys
-
 project = "Emulode"
 copyright = "2024, Arindam Saha"
 author = "Arindam Saha"
