@@ -130,7 +130,7 @@ class EmulatorFactory:
 class PlotterFactory:
     """Factory class for the plotter."""
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-instance-attributes
 
     configs: Configs
     solver: Solver
