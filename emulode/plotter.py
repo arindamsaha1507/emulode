@@ -1,5 +1,6 @@
 """Module for plotting data"""
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -13,7 +14,6 @@ class Plotter:
         xdata: np.ndarray,
         ydata: np.ndarray,
         yvar: np.ndarray = None,
-        color: str = None,
         style: str = None,
         legend: str = None,
     ) -> None:
@@ -26,12 +26,12 @@ class Plotter:
 
         if yvar is not None:
             yvar = yvar.flatten()
-            ax.plot(xdata, ydata, color + style, label=legend)
-            ax.fill_between(xdata, ydata - yvar, ydata + yvar, color=color, alpha=0.3)
-        elif style == "-":
-            ax.plot(xdata, ydata, color=color, linestyle=style, label=legend)
+            ax.plot(xdata, ydata, style, label=legend)
+            ax.fill_between(xdata, ydata - yvar, ydata + yvar, color="gray", alpha=0.3)
+        elif legend == "ideal":
+            ax.plot(xdata, ydata, style, label=legend)
         else:
-            ax.scatter(xdata, ydata, color=color, marker=style, label=legend)
+            ax.scatter(xdata, ydata, color=style, label=legend)
 
     @staticmethod
     def savefig(fig: plt.Figure, filename: str) -> None:
@@ -48,11 +48,6 @@ class Plotter:
         x_predict: np.ndarray,
         y_predict: np.ndarray,
         y_var: np.ndarray,
-        data_color: str = "r",
-        predict_color: str = "b",
-        data_style: str = "o",
-        predict_style: str = "-",
-        scale: float = 1.0,
         x_ideal: np.ndarray = None,
         y_ideal: np.ndarray = None,
     ) -> plt.Figure:
@@ -63,30 +58,23 @@ class Plotter:
 
         fig, ax = plt.subplots()
 
-        xdata *= scale
-        x_predict *= scale
-
         if x_ideal is not None and y_ideal is not None:
-            Plotter.plotter(ax, x_ideal, y_ideal, color="g", style="-", legend="ideal")
+            Plotter.plotter(ax, x_ideal, y_ideal, style="g-", legend="ideal")
 
-        Plotter.plotter(
-            ax,
-            x_predict,
-            y_predict,
-            y_var,
-            color=predict_color,
-            style=predict_style,
-            legend="emulated",
-        )
+        Plotter.plotter(ax, x_predict, y_predict, y_var, "b-", legend="emulated")
 
-        Plotter.plotter(
-            ax, xdata, ydata, color=data_color, style=data_style, legend="simulated"
-        )
+        Plotter.plotter(ax, xdata, ydata, style="r", legend="simulated")
 
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
 
         ax.legend()
+
+        directory = file.split("/")[:-1]
+        directory = "/".join(directory)
+
+        if directory:
+            os.makedirs(directory, exist_ok=True)
 
         Plotter.savefig(fig, file)
 

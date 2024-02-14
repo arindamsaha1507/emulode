@@ -22,11 +22,11 @@ class Solver:
     t_steps: int
     transience: int | float
 
-    results: np.ndarray = field(init=False)
+    results: np.ndarray = field(init=False, repr=False)
 
-    parameter_of_interest: str = field(init=False)
-    component_of_interest: int = field(init=False)
-    quantity_of_interest: Callable[[np.ndarray], float] = field(init=False)
+    parameter_of_interest: str = field(init=False, repr=False)
+    component_of_interest: int = field(init=False, repr=False)
+    quantity_of_interest: Callable[[np.ndarray], float] = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         """Check that the given parameters are valid."""
@@ -72,23 +72,14 @@ class Solver:
 
         self.results = sol.y[:, self.transience :]
 
-    def set_varying_settings(
-        self, parameter: str, qoi: Callable = None, component: int = None
-    ) -> None:
+    def set_varying_settings(self, parameter: str, qoi: Callable = None) -> None:
         """Set the parameter and quantity of interest."""
 
-        if parameter == "t" and component is None:
-            raise ValueError("Cannot set component for time parameter")
-
-        if parameter == "t":
-            self.component_of_interest = component
-
-        elif parameter not in self.params:
+        if parameter not in self.params:
             raise ValueError(f"Parameter '{parameter}' not found")
 
-        else:
-            self.parameter_of_interest = parameter
-            self.quantity_of_interest = qoi
+        self.parameter_of_interest = parameter
+        self.quantity_of_interest = qoi
 
     def evaluate_at_point(self, parameter: float) -> float:
         """Evaluate the quantity of interest for the given parameter."""
@@ -100,13 +91,6 @@ class Solver:
 
         self.solve()
         return self.quantity_of_interest(self.results)
-
-    def evaluate_at_time(self, time: float) -> np.ndarray:
-        """Evaluate the state of the system at the given time."""
-
-        self.solve()
-        res = self.results[self.component_of_interest, :]
-        return res[int(time * (len(res) - 1))]
 
     def phase_plot(
         self, components: tuple[int, int], filename: str = "plots/phase.png"

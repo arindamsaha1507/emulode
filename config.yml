@@ -1,0 +1,46 @@
+ode:
+
+  chosen_ode: Lorenz
+
+  parameters:
+
+    Lorenz:
+      sigma: 10
+      rho: 28
+      beta: 2.667
+
+    Rossler:
+      a: 0.2
+      b: 0.2
+      c: 5.7
+
+solver:
+
+  t_range: [0, 100]
+  n_steps: 1000
+  transience: 0.8
+
+  initial_conditions: [1, 1, 1]
+
+
+simulator:
+
+  parameter_of_interest: rho
+  component_of_interest: 0
+  range: [2, 12]
+  n_simulation_points: 10
+
+
+emulator:
+
+  n_prediction_points: 100
+  n_iterations: 500
+  n_layers: 3
+ 
+
+plotter:
+
+  directory: plots
+  filename: plot_test.png
+  x_label: Time
+  y_label: Maximum
