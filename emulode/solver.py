@@ -72,18 +72,10 @@ class Solver:
 
         self.results = sol.y[:, self.transience :]
 
-    def set_varying_settings(
-        self, parameter: str, qoi: Callable = None, component: int = None
-    ) -> None:
+    def set_varying_settings(self, parameter: str, qoi: Callable = None) -> None:
         """Set the parameter and quantity of interest."""
 
-        if parameter == "t" and component is None:
-            raise ValueError("Cannot set component for time parameter")
-
-        if parameter == "t":
-            self.component_of_interest = component
-
-        elif parameter not in self.params:
+        if parameter not in self.params:
             raise ValueError(f"Parameter '{parameter}' not found")
 
         else:
@@ -100,13 +92,6 @@ class Solver:
 
         self.solve()
         return self.quantity_of_interest(self.results)
-
-    def evaluate_at_time(self, time: float) -> np.ndarray:
-        """Evaluate the state of the system at the given time."""
-
-        self.solve()
-        res = self.results[self.component_of_interest, :]
-        return res[int(time * (len(res) - 1))]
 
     def phase_plot(
         self, components: tuple[int, int], filename: str = "plots/phase.png"

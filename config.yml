@@ -1,6 +1,6 @@
 ode:
 
-  chosen_ode: Rossler
+  chosen_ode: Lorenz
 
   parameters:
 
@@ -25,15 +25,15 @@ solver:
 
 simulator:
 
-  parameter_of_interest: t
+  parameter_of_interest: rho
   component_of_interest: 0
-  range: [0, 1]
-  n_simulation_points: 30 # Dosent work for 10, Best for 20, Worse for 30
+  range: [2, 12]
+  n_simulation_points: 10
 
 
 emulator:
 
-  n_prediction_points: 1000
+  n_prediction_points: 100
   n_iterations: 500
   n_layers: 3
  
@@ -43,4 +43,4 @@ plotter:
   directory: plots
   filename: plot_test.png
   x_label: Time
-  y_label: Component 0
+  y_label: Maximum

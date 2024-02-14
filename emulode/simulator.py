@@ -22,7 +22,6 @@ class Simulator:
     parameter_end: float
     num_points: int
     function_of_interest: Callable[[np.ndarray], float] = field(default=None)
-    component_of_interest: int = field(default=-1)
 
     xdata: np.ndarray = field(init=False, repr=False)
     ydata: np.ndarray = field(init=False, repr=False)
@@ -42,14 +41,9 @@ class Simulator:
         ):
             raise ValueError("varying_parameter must be a parameter of the ODE or 't'")
 
-        if self.varying_parameter == "t":
-            self.solver.set_varying_settings(
-                self.varying_parameter, component=self.component_of_interest
-            )
-        else:
-            self.solver.set_varying_settings(
-                self.varying_parameter, self.function_of_interest
-            )
+        self.solver.set_varying_settings(
+            self.varying_parameter, self.function_of_interest
+        )
 
         self.xdata, self.ydata = self.create_data()
 
@@ -62,10 +56,7 @@ class Simulator:
         time_start = time.time()
 
         x = np.linspace(self.parameter_start, self.parameter_end, self.num_points)
-        if self.varying_parameter == "t":
-            y = np.array([self.solver.evaluate_at_time(xi) for xi in x])
-        else:
-            y = np.array([self.solver.evaluate_at_point(xi) for xi in x])
+        y = np.array([self.solver.evaluate_at_point(xi) for xi in x])
 
         time_end = time.time()
 

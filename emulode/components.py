@@ -73,6 +73,7 @@ class SimulatorFactory:
 
     solver_factory: SolverFactory
     configs: Configs
+    ideal: bool = False
 
     parameter_of_interest: str = field(init=False)
     range_of_interest: tuple[float, float] = field(init=False)
@@ -85,7 +86,12 @@ class SimulatorFactory:
 
         self.parameter_of_interest = self.configs.simulator.parameter_of_interest
         self.range_of_interest = tuple(self.configs.simulator.range)
-        self.n_points = self.configs.simulator.n_simulation_points
+
+        if self.ideal:
+            self.n_points = self.configs.emulator.n_prediction_points
+        else:
+            self.n_points = self.configs.simulator.n_simulation_points
+
         self.component_of_interest = self.configs.simulator.component_of_interest
 
         self.simulator = Simulator(
@@ -94,7 +100,7 @@ class SimulatorFactory:
             self.range_of_interest[0],
             self.range_of_interest[1],
             self.n_points,
-            component_of_interest=self.component_of_interest,
+            lambda x: max(x[0, :]),
         )
 
 

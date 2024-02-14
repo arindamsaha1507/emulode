@@ -10,8 +10,11 @@ from emulode.components import (
     SolverFactory,
     SimulatorFactory,
     EmulatorFactory,
-    PlotterFactory,
 )
+
+from emulode.plotter import Plotter
+
+# import matplotlib.pyplot as plt
 
 
 def trial() -> None:
@@ -31,12 +34,42 @@ def main() -> None:
     solver = SolverFactory(ode, configs)
     simulator = SimulatorFactory(solver, configs)
     emulator = EmulatorFactory(simulator, configs)
-    PlotterFactory(
-        configs,
-        solver.solver,
-        simulator.simulator,
-        emulator.emulator,
+
+    ideal = SimulatorFactory(solver, configs, ideal=True)
+
+    Plotter.create_combined_plot(
+        configs.plotter.filename,
+        configs.plotter.x_label,
+        configs.plotter.y_label,
+        simulator.simulator.xdata,
+        simulator.simulator.ydata,
+        emulator.emulator.x_predict,
+        emulator.emulator.y_predict,
+        emulator.emulator.y_var,
+        ideal.simulator.xdata,
+        ideal.simulator.ydata,
     )
+
+    # plt.plot(emulator.emulator.x_predict, emulator.emulator.y_predict)
+    # xx = emulator.emulator.x_predict.flatten()
+    # yy = emulator.emulator.y_predict.flatten()
+    # yv = emulator.emulator.y_var.flatten()
+    # plt.fill_between(xx, yy - yv, yy + yv, color="gray", alpha=0.5)
+
+    # plt.plot(simulator.simulator.xdata, simulator.simulator.ydata, "kx")
+
+    # ideal = SimulatorFactory(solver, configs, ideal=True)
+
+    # plt.plot(ideal.simulator.xdata, ideal.simulator.ydata, "r-")
+
+    # plt.savefig("plots/emulator.png")
+
+    # PlotterFactory(
+    #     configs,
+    #     solver.solver,
+    #     simulator.simulator,
+    #     emulator.emulator,
+    # )
 
 
 if __name__ == "__main__":
