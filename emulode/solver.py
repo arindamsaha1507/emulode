@@ -78,9 +78,8 @@ class Solver:
         if parameter not in self.params:
             raise ValueError(f"Parameter '{parameter}' not found")
 
-        else:
-            self.parameter_of_interest = parameter
-            self.quantity_of_interest = qoi
+        self.parameter_of_interest = parameter
+        self.quantity_of_interest = qoi
 
     def evaluate_at_point(self, parameter: float) -> float:
         """Evaluate the quantity of interest for the given parameter."""

@@ -2,12 +2,10 @@
 
 from dataclasses import dataclass, field
 
-import numpy as np
 from emulode.config import Configs
 from emulode.emulator import Emulator
 
 from emulode.ode import ODE
-from emulode.plotter import Plotter
 from emulode.simulator import Simulator
 from emulode.solver import Solver
 
@@ -71,6 +69,8 @@ class SolverFactory:
 class SimulatorFactory:
     """Factory class for the simulator."""
 
+    # pylint: disable=too-many-instance-attributes
+
     solver_factory: SolverFactory
     configs: Configs
     ideal: bool = False
@@ -129,56 +129,4 @@ class EmulatorFactory:
             self.n_layers,
             self.n_predict,
             self.n_iterations,
-        )
-
-
-@dataclass
-class PlotterFactory:
-    """Factory class for the plotter."""
-
-    # pylint: disable=too-many-instance-attributes
-
-    configs: Configs
-    solver: Solver
-    simulator: Simulator
-    emulator: Emulator
-
-    directory: str = field(init=False)
-    filename: str = field(init=False)
-    xlabel: str = field(init=False)
-    ylabel: str = field(init=False)
-    scale: float = field(init=False)
-    x_ideal: np.ndarray = field(init=False)
-    y_ideal: np.ndarray = field(init=False)
-
-    plotter: Plotter = field(init=False)
-
-    def __post_init__(self) -> None:
-
-        self.directory = self.configs.plotter.directory
-        self.filename = self.configs.plotter.filename
-        self.xlabel = self.configs.plotter.x_label
-        self.ylabel = self.configs.plotter.y_label
-
-        self.scale = (self.configs.solver.t_final - self.configs.solver.t_initial) * (
-            1 - self.configs.solver.transience
-        )
-
-        self.x_ideal = np.linspace(0, self.scale, len(self.solver.results[0, :]))
-        self.y_ideal = self.solver.results[
-            self.configs.simulator.component_of_interest, :
-        ]
-
-        Plotter.create_combined_plot(
-            f"{self.directory}/{self.filename}",
-            self.xlabel,
-            self.ylabel,
-            self.simulator.xdata,
-            self.simulator.ydata,
-            self.emulator.x_predict,
-            self.emulator.y_predict,
-            self.emulator.y_var,
-            scale=self.scale,
-            x_ideal=self.x_ideal,
-            y_ideal=self.y_ideal,
         )

@@ -14,8 +14,6 @@ from emulode.components import (
 
 from emulode.plotter import Plotter
 
-# import matplotlib.pyplot as plt
-
 
 def trial() -> None:
     """Trial function for the application."""
@@ -38,7 +36,7 @@ def main() -> None:
     ideal = SimulatorFactory(solver, configs, ideal=True)
 
     Plotter.create_combined_plot(
-        configs.plotter.filename,
+        f"{configs.plotter.directory}/{configs.plotter.filename}",
         configs.plotter.x_label,
         configs.plotter.y_label,
         simulator.simulator.xdata,
@@ -49,27 +47,6 @@ def main() -> None:
         ideal.simulator.xdata,
         ideal.simulator.ydata,
     )
-
-    # plt.plot(emulator.emulator.x_predict, emulator.emulator.y_predict)
-    # xx = emulator.emulator.x_predict.flatten()
-    # yy = emulator.emulator.y_predict.flatten()
-    # yv = emulator.emulator.y_var.flatten()
-    # plt.fill_between(xx, yy - yv, yy + yv, color="gray", alpha=0.5)
-
-    # plt.plot(simulator.simulator.xdata, simulator.simulator.ydata, "kx")
-
-    # ideal = SimulatorFactory(solver, configs, ideal=True)
-
-    # plt.plot(ideal.simulator.xdata, ideal.simulator.ydata, "r-")
-
-    # plt.savefig("plots/emulator.png")
-
-    # PlotterFactory(
-    #     configs,
-    #     solver.solver,
-    #     simulator.simulator,
-    #     emulator.emulator,
-    # )
 
 
 if __name__ == "__main__":
