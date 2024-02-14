@@ -1,0 +1,18 @@
+site_name: Emulode
+
+theme:
+  name: material
+  palette:
+    primary: green
+    accent: light green
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+
+plugins:
+  - mkdocstrings
+
+nav:
+  - Home: index.md
+  - About: about.md
+  - Contact: contact.md
