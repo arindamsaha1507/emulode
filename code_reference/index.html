@@ -12,7 +12,7 @@
         <link rel="prev" href="..">
       
       
-        <link rel="next" href="../contact/">
+        <link rel="next" href="../emulation/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Code Reference - Emulode</title>
+        <title>Overall Structure - Emulode</title>
       
     
     
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Code Reference
+              Overall Structure
             
           </span>
         </div>
@@ -185,6 +185,43 @@
   
   
   
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Code Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Code Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
@@ -197,11 +234,61 @@
         
   
   <span class="md-ellipsis">
-    Code Reference
+    Overall Structure
   </span>
   
 
       </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../emulation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Emulation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -261,553 +348,6 @@
 
 
 <h1 id="code-reference">Code Reference</h1>
-<h1 id="emulationfactory-class">EmulationFactory class</h1>
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<a id="emulode.emulation.EmulationFactory"></a>
-  <div class="doc doc-contents first">
-
-  
-      <p>Factory class for the creating the Emulator object.</p>
-<p>Currrntly, only yml configuration files are supported. Future versions
-may support JSON and other configuration files.</p>
-
-            <details class="quote">
-              <summary>Source code in <code>emulode/emulation.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EmulationFactory</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Factory class for the creating the Emulator object.</span>
-
-<span class="sd">    Currrntly, only yml configuration files are supported. Future versions</span>
-<span class="sd">    may support JSON and other configuration files.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">create_from_yml_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="n">ideal_run</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Emulation</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create an `Emulation` object from a yml configuration file.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config_file: The configuration yml file</span>
-<span class="sd">            ideal_run: Whether to include ideal results</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">configs</span> <span class="o">=</span> <span class="n">Configs</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
-
-        <span class="n">ode</span> <span class="o">=</span> <span class="n">ODEFactory</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
-        <span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
-        <span class="n">simulator</span> <span class="o">=</span> <span class="n">SimulatorFactory</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
-        <span class="n">emulator</span> <span class="o">=</span> <span class="n">EmulatorFactory</span><span class="p">(</span><span class="n">simulator</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">ideal_run</span><span class="p">:</span>
-            <span class="n">ideal</span> <span class="o">=</span> <span class="n">SimulatorFactory</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">ideal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ideal</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">return</span> <span class="n">Emulation</span><span class="p">(</span>
-            <span class="n">configs</span><span class="p">,</span>
-            <span class="n">solver</span><span class="o">.</span><span class="n">solver</span><span class="p">,</span>
-            <span class="n">simulator</span><span class="o">.</span><span class="n">simulator</span><span class="p">,</span>
-            <span class="n">emulator</span><span class="o">.</span><span class="n">emulator</span><span class="p">,</span>
-            <span class="n">ideal</span><span class="o">.</span><span class="n">simulator</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">create_from_json_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Emulation</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create an `Emulation` object from a json configuration file</span>
-<span class="sd">        (in future).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;JSON configuration files not supported yet&quot;</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="emulode.emulation.EmulationFactory.create_from_json_file" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">create_from_json_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span></code>
-  
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
-  </span>
-
-</h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Create an <code>Emulation</code> object from a json configuration file
-(in future).</p>
-
-          <details class="quote">
-            <summary>Source code in <code>emulode/emulation.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">create_from_json_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Emulation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create an `Emulation` object from a json configuration file</span>
-<span class="sd">    (in future).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;JSON configuration files not supported yet&quot;</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="emulode.emulation.EmulationFactory.create_from_yml_file" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">create_from_yml_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">ideal_run</span><span class="p">)</span></code>
-  
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
-  </span>
-
-</h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Create an <code>Emulation</code> object from a yml configuration file.</p>
-
-
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>config_file</code></td>
-          <td>
-                <code><span title="os.PathLike">PathLike</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The configuration yml file</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>ideal_run</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Whether to include ideal results</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-          <details class="quote">
-            <summary>Source code in <code>emulode/emulation.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">create_from_yml_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="n">ideal_run</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Emulation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create an `Emulation` object from a yml configuration file.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        config_file: The configuration yml file</span>
-<span class="sd">        ideal_run: Whether to include ideal results</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">configs</span> <span class="o">=</span> <span class="n">Configs</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
-
-    <span class="n">ode</span> <span class="o">=</span> <span class="n">ODEFactory</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
-    <span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
-    <span class="n">simulator</span> <span class="o">=</span> <span class="n">SimulatorFactory</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
-    <span class="n">emulator</span> <span class="o">=</span> <span class="n">EmulatorFactory</span><span class="p">(</span><span class="n">simulator</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">ideal_run</span><span class="p">:</span>
-        <span class="n">ideal</span> <span class="o">=</span> <span class="n">SimulatorFactory</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">ideal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ideal</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">return</span> <span class="n">Emulation</span><span class="p">(</span>
-        <span class="n">configs</span><span class="p">,</span>
-        <span class="n">solver</span><span class="o">.</span><span class="n">solver</span><span class="p">,</span>
-        <span class="n">simulator</span><span class="o">.</span><span class="n">simulator</span><span class="p">,</span>
-        <span class="n">emulator</span><span class="o">.</span><span class="n">emulator</span><span class="p">,</span>
-        <span class="n">ideal</span><span class="o">.</span><span class="n">simulator</span><span class="p">,</span>
-    <span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
-</div>
-
-
-
-  </div>
-
-  </div>
-
-
-</div><hr />
-<h1 id="emulation-class">Emulation class</h1>
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<a id="emulode.emulation.Emulation"></a>
-  <div class="doc doc-contents first">
-
-  
-      <p>A top level class to store all information about an emulation run.</p>
-<p>Note that since the <code>ideal</code> parameter is useful when comparing the
-emulator results with the simulator for all points. Providing such
-results may not be always possible. Therefore, the <code>ideal</code> parameter
-is optional.</p>
-
-
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>configs</code></td>
-          <td>
-                <code><span title="emulode.config.Configs">Configs</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The configuration yml file</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>solver</code></td>
-          <td>
-                <code><span title="emulode.solver.Solver">Solver</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The solver</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>simulator</code></td>
-          <td>
-                <code><span title="emulode.simulator.Simulator">Simulator</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The simulator containing experimental data</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>emulator</code></td>
-          <td>
-                <code><span title="emulode.emulator.Emulator">Emulator</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The emulator</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>ideal</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="emulode.simulator.Simulator">Simulator</span>]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The simulator containing ideal data (for all emulated points)</p>
-            </div>
-          </td>
-          <td>
-                <code><span title="dataclasses.field">field</span>(default=None)</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-            <details class="quote">
-              <summary>Source code in <code>emulode/emulation.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">Emulation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A top level class to store all information about an emulation run.</span>
-
-<span class="sd">    Note that since the `ideal` parameter is useful when comparing the</span>
-<span class="sd">    emulator results with the simulator for all points. Providing such</span>
-<span class="sd">    results may not be always possible. Therefore, the `ideal` parameter</span>
-<span class="sd">    is optional.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        configs: The configuration yml file</span>
-<span class="sd">        solver: The solver</span>
-<span class="sd">        simulator: The simulator containing experimental data</span>
-<span class="sd">        emulator: The emulator</span>
-<span class="sd">        ideal: The simulator containing ideal data (for all emulated points)</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">configs</span><span class="p">:</span> <span class="n">Configs</span>
-    <span class="n">solver</span><span class="p">:</span> <span class="n">Solver</span>
-    <span class="n">simulator</span><span class="p">:</span> <span class="n">Simulator</span>
-    <span class="n">emulator</span><span class="p">:</span> <span class="n">Emulator</span>
-    <span class="n">ideal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Simulator</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a combined plot containing the `simulator`, `emulator` and</span>
-<span class="sd">        `ideal` data (if provided) and saves it to the file specified in the</span>
-<span class="sd">        `configs` parameter.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">Plotter</span><span class="o">.</span><span class="n">create_combined_plot</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">emulator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ideal</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="emulode.emulation.Emulation.plot" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">plot</span><span class="p">()</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Create a combined plot containing the <code>simulator</code>, <code>emulator</code> and
-<code>ideal</code> data (if provided) and saves it to the file specified in the
-<code>configs</code> parameter.</p>
-
-          <details class="quote">
-            <summary>Source code in <code>emulode/emulation.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a combined plot containing the `simulator`, `emulator` and</span>
-<span class="sd">    `ideal` data (if provided) and saves it to the file specified in the</span>
-<span class="sd">    `configs` parameter.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">Plotter</span><span class="o">.</span><span class="n">create_combined_plot</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">emulator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ideal</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span>
-    <span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
-</div>
-
-
-
-  </div>
-
-  </div>
-
-
-</div>
 
 
 
