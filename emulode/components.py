@@ -1,5 +1,6 @@
 """Module for the components of the project"""
 
+import argparse
 from dataclasses import dataclass, field
 
 from emulode.config import Configs
@@ -34,99 +35,93 @@ class ODEFactory:
         raise ValueError(f"ODE '{chosen_ode}' not found")
 
 
-@dataclass
 class SolverFactory:
     """Factory class for the solver."""
 
-    ode_factory: ODEFactory
-    configs: Configs
+    @staticmethod
+    def create_from_config(ode_factory: ODEFactory, configs: Configs) -> Solver:
+        """Create a solver from the given configuration."""
 
-    initial_conditions: list[float] = field(init=False)
-    t_range: tuple[float, float] = field(init=False)
-    n_steps: int = field(init=False)
-    transience: int = field(init=False)
+        initial_conditions = configs.solver.initial_conditions
+        t_range = tuple(configs.solver.t_range)
+        n_steps = configs.solver.n_steps
+        transience = configs.solver.transience
 
-    solver: Solver = field(init=False)
-
-    def __post_init__(self) -> None:
-
-        self.initial_conditions = self.configs.solver.initial_conditions
-        self.t_range = tuple(self.configs.solver.t_range)
-        self.n_steps = self.configs.solver.n_steps
-        self.transience = self.configs.solver.transience
-
-        self.solver = Solver(
-            self.ode_factory.function,
-            self.ode_factory.parameters,
-            self.initial_conditions,
-            self.t_range,
-            self.n_steps,
-            self.transience,
+        return Solver(
+            ode_factory.function,
+            ode_factory.parameters,
+            initial_conditions,
+            t_range,
+            n_steps,
+            transience,
         )
 
+    @staticmethod
+    def create_from_commandline_arguments(
+        ode_factory: ODEFactory, args: argparse.Namespace
+    ) -> Solver:
+        """Create a solver from the given command line arguments."""
 
-@dataclass
+        raise NotImplementedError("Command line arguments not supported yet")
+
+
 class SimulatorFactory:
     """Factory class for the simulator."""
 
-    # pylint: disable=too-many-instance-attributes
+    @staticmethod
+    def create_from_config(
+        solver: Solver, configs: Configs, ideal: bool = False
+    ) -> Simulator:
+        """Create a simulator from the given configuration."""
 
-    solver_factory: SolverFactory
-    configs: Configs
-    ideal: bool = False
+        parameter_of_interest = configs.simulator.parameter_of_interest
+        range_of_interest = tuple(configs.simulator.range)
 
-    parameter_of_interest: str = field(init=False)
-    range_of_interest: tuple[float, float] = field(init=False)
-    n_points: int = field(init=False)
-    component_of_interest: int = field(init=False)
-
-    simulator: Simulator = field(init=False)
-
-    def __post_init__(self) -> None:
-
-        self.parameter_of_interest = self.configs.simulator.parameter_of_interest
-        self.range_of_interest = tuple(self.configs.simulator.range)
-
-        if self.ideal:
-            self.n_points = self.configs.emulator.n_prediction_points
+        if ideal:
+            n_points = configs.emulator.n_prediction_points
         else:
-            self.n_points = self.configs.simulator.n_simulation_points
+            n_points = configs.simulator.n_simulation_points
 
-        self.component_of_interest = self.configs.simulator.component_of_interest
-
-        self.simulator = Simulator(
-            self.solver_factory.solver,
-            self.parameter_of_interest,
-            self.range_of_interest[0],
-            self.range_of_interest[1],
-            self.n_points,
+        return Simulator(
+            solver,
+            parameter_of_interest,
+            range_of_interest[0],
+            range_of_interest[1],
+            n_points,
             lambda x: max(x[0, :]),
         )
 
+    @staticmethod
+    def create_from_commandline_arguments(
+        solver: Solver, args: argparse.Namespace
+    ) -> Simulator:
+        """Create a simulator from the given command line arguments."""
 
-@dataclass
+        raise NotImplementedError("Command line arguments not supported yet")
+
+
 class EmulatorFactory:
     """Factory class for the emulator."""
 
-    simulator_factory: SimulatorFactory
+    simulator: Simulator
     configs: Configs
 
-    n_layers: int = field(init=False)
-    n_predict: int = field(init=False)
-    n_iterations: int = field(init=False)
+    @staticmethod
+    def create_from_config(simulator: Simulator, configs: Configs) -> Emulator:
+        """Create an emulator from the given configuration."""
 
-    emulator: Emulator = field(init=False)
+        n_layers = configs.emulator.n_layers
+        n_predict = configs.emulator.n_prediction_points
+        n_iterations = configs.emulator.n_iterations
 
-    def __post_init__(self) -> None:
-
-        self.n_layers = self.configs.emulator.n_layers
-        self.n_predict = self.configs.emulator.n_prediction_points
-        self.n_iterations = self.configs.emulator.n_iterations
-
-        self.emulator = Emulator(
-            self.simulator_factory.simulator.xdata,
-            self.simulator_factory.simulator.ydata,
-            self.n_layers,
-            self.n_predict,
-            self.n_iterations,
+        return Emulator(
+            simulator.xdata, simulator.ydata, n_layers, n_predict, n_iterations
         )
+
+    @staticmethod
+    def create_from_commandline_arguments(
+        simulator: Simulator, args: argparse.Namespace
+    ) -> Emulator:
+        """Create an emulator from the given command line arguments."""
+
+        raise NotImplementedError("Command line arguments not supported yet")

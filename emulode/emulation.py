@@ -77,26 +77,15 @@ class EmulationFactory:
         configs = Configs(config_file)
 
         ode = ODEFactory(configs)
-        solver = SolverFactory(ode, configs)
-        simulator = SimulatorFactory(solver, configs)
-        emulator = EmulatorFactory(simulator, configs)
+        solver = SolverFactory.create_from_config(ode, configs)
+        simulator = SimulatorFactory.create_from_config(solver, configs)
+        emulator = EmulatorFactory.create_from_config(simulator, configs)
 
         if ideal_run:
-            ideal = SimulatorFactory(solver, configs, ideal=True)
-            return Emulation(
-                configs,
-                solver.solver,
-                simulator.simulator,
-                emulator.emulator,
-                ideal.simulator,
-            )
+            ideal = SimulatorFactory.create_from_config(solver, configs, ideal=True)
+            return Emulation(configs, solver, simulator, emulator, ideal)
 
-        return Emulation(
-            configs,
-            solver.solver,
-            simulator.simulator,
-            emulator.emulator,
-        )
+        return Emulation(configs, solver, simulator, emulator)
 
     @staticmethod
     def create_from_json_file(config_file: os.PathLike) -> Emulation:
