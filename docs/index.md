@@ -1,17 +1,9 @@
-# Welcome to MkDocs
+# Emulode: Emulating Ordinary Differential Equations
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+This python tools provides a clean and easily customisable interface to emulate simulations involving systems of differential equations. This is essentially a wrapper of the [DGP Package](https://github.com/mingdeyu/DGP) which, in turn provides tools such as **Deep Gaussian Process Emulators** and **Linked Gaussian Process Emulators**.
 
-## Commands
+> **Note**: This work is currently under active development
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+We divide the entire emulation process into the following four distinct steps.
 
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+![Steps Flowchart](../assets/emulode.drawio.svg)
