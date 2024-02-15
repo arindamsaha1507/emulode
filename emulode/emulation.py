@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass, field
 import os
+from typing import Optional
+
 from emulode.components import (
     EmulatorFactory,
     ODEFactory,
@@ -18,16 +20,35 @@ from emulode.plotter import Plotter
 
 @dataclass
 class Emulation:
-    """Class for the emulation."""
+    """
+    A top level class to store all information about an emulation run.
+
+    Note that since the `ideal` parameter is useful when comparing the
+    emulator results with the simulator for all points. Providing such
+    results may not be always possible. Therefore, the `ideal` parameter
+    is optional.
+
+    Args:
+        configs: The configuration yml file
+        solver: The solver
+        simulator: The simulator containing experimental data
+        emulator: The emulator
+        ideal: The simulator containing ideal data (for all emulated points)
+
+    """
 
     configs: Configs
     solver: Solver
     simulator: Simulator
     emulator: Emulator
-    ideal: Simulator = field(default=None)
+    ideal: Optional[Simulator] = field(default=None)
 
     def plot(self) -> None:
-        """Create a combined plot of the emulator and the simulator."""
+        """
+        Create a combined plot containing the `simulator`, `emulator` and
+        `ideal` data (if provided) and saves it to the file specified in the
+        `configs` parameter.
+        """
 
         Plotter.create_combined_plot(
             self.configs, self.emulator, self.simulator, self.ideal, save=True
@@ -35,11 +56,23 @@ class Emulation:
 
 
 class EmulationFactory:
-    """Factory class for the Emulation."""
+    """
+    Factory class for the creating the Emulator object.
+
+    Currrntly, only yml configuration files are supported. Future versions
+    may support JSON and other configuration files.
+    """
 
     @staticmethod
-    def create(config_file: os.PathLike) -> Emulation:
-        """Create an Emulation object."""
+    def create_from_yml_file(config_file: os.PathLike, ideal_run: bool) -> Emulation:
+        """
+        Create an `Emulation` object from a yml configuration file.
+
+        Args:
+            config_file: The configuration yml file
+            ideal_run: Whether to include ideal results
+
+        """
 
         configs = Configs(config_file)
 
@@ -47,7 +80,11 @@ class EmulationFactory:
         solver = SolverFactory(ode, configs)
         simulator = SimulatorFactory(solver, configs)
         emulator = EmulatorFactory(simulator, configs)
-        ideal = SimulatorFactory(solver, configs, ideal=True)
+
+        if ideal_run:
+            ideal = SimulatorFactory(solver, configs, ideal=True)
+        else:
+            ideal = None
 
         return Emulation(
             configs,
@@ -58,19 +95,10 @@ class EmulationFactory:
         )
 
     @staticmethod
-    def create_without_ideal(config_file: os.PathLike) -> Emulation:
-        """Create an Emulation object without ideal data."""
+    def create_from_json_file(config_file: os.PathLike) -> Emulation:
+        """
+        Create an `Emulation` object from a json configuration file
+        (in future).
+        """
 
-        configs = Configs(config_file)
-
-        ode = ODEFactory(configs)
-        solver = SolverFactory(ode, configs)
-        simulator = SimulatorFactory(solver, configs)
-        emulator = EmulatorFactory(simulator, configs)
-
-        return Emulation(
-            configs,
-            solver.solver,
-            simulator.simulator,
-            emulator.emulator,
-        )
+        raise NotImplementedError("JSON configuration files not supported yet")
