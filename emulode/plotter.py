@@ -4,6 +4,10 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
+from emulode.config import Configs
+from emulode.emulator import Emulator
+from emulode.simulator import Simulator
+
 
 class Plotter:
     """Class for plotting data"""
@@ -40,17 +44,23 @@ class Plotter:
 
     @staticmethod
     def create_combined_plot(
-        file: str,
-        xlabel: str,
-        ylabel: str,
-        xdata: np.ndarray,
-        ydata: np.ndarray,
-        x_predict: np.ndarray,
-        y_predict: np.ndarray,
-        y_var: np.ndarray,
-        x_ideal: np.ndarray = None,
-        y_ideal: np.ndarray = None,
-    ) -> plt.Figure:
+        configs: Configs,
+        emulator: Emulator,
+        simulator: Simulator,
+        ideal: Simulator = None,
+        save: bool = True,
+    ) -> None:
+        # file: str,
+        # xlabel: str,
+        # ylabel: str,
+        # xdata: np.ndarray,
+        # ydata: np.ndarray,
+        # x_predict: np.ndarray,
+        # y_predict: np.ndarray,
+        # y_var: np.ndarray,
+        # x_ideal: np.ndarray = None,
+        # y_ideal: np.ndarray = None,
+        # ) -> plt.Figure:
         """Create a combined plot of the given data."""
 
         # pylint: disable=too-many-arguments
@@ -58,25 +68,38 @@ class Plotter:
 
         fig, ax = plt.subplots()
 
-        if x_ideal is not None and y_ideal is not None:
-            Plotter.plotter(ax, x_ideal, y_ideal, style="g-", legend="ideal")
+        # if x_ideal is not None and y_ideal is not None:
 
-        Plotter.plotter(ax, x_predict, y_predict, y_var, "b-", legend="emulated")
+        if ideal is not None:
+            Plotter.plotter(ax, ideal.xdata, ideal.ydata, style="g-", legend="ideal")
 
-        Plotter.plotter(ax, xdata, ydata, style="r", legend="simulated")
+        Plotter.plotter(
+            ax,
+            emulator.x_predict,
+            emulator.y_predict,
+            emulator.y_var,
+            style="b-",
+            legend="emulated",
+        )
 
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
+        Plotter.plotter(
+            ax, simulator.xdata, simulator.ydata, style="r", legend="simulated"
+        )
+
+        ax.set_xlabel(configs.plotter.x_label)
+        ax.set_ylabel(configs.plotter.y_label)
 
         ax.legend()
 
-        directory = file.split("/")[:-1]
-        directory = "/".join(directory)
+        directory = os.path.dirname(configs.plotter.directory)
 
         if directory:
             os.makedirs(directory, exist_ok=True)
 
-        Plotter.savefig(fig, file)
+        filename = os.path.join(configs.plotter.directory, configs.plotter.filename)
+
+        if save:
+            Plotter.savefig(fig, filename)
 
     @staticmethod
     def create_basic_plot(

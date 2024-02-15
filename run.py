@@ -15,12 +15,6 @@ from emulode.components import (
 from emulode.plotter import Plotter
 
 
-def trial() -> None:
-    """Trial function for the application."""
-
-    print(Configs(os.path.join(os.getcwd(), "config.yml")))
-
-
 def main() -> None:
     """Main function for the application."""
 
@@ -36,16 +30,7 @@ def main() -> None:
     ideal = SimulatorFactory(solver, configs, ideal=True)
 
     Plotter.create_combined_plot(
-        f"{configs.plotter.directory}/{configs.plotter.filename}",
-        configs.plotter.x_label,
-        configs.plotter.y_label,
-        simulator.simulator.xdata,
-        simulator.simulator.ydata,
-        emulator.emulator.x_predict,
-        emulator.emulator.y_predict,
-        emulator.emulator.y_var,
-        ideal.simulator.xdata,
-        ideal.simulator.ydata,
+        configs, emulator.emulator, simulator.simulator, ideal.simulator, save=True
     )
 
 

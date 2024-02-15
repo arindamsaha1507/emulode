@@ -33,7 +33,7 @@ simulator:
 
 emulator:
 
-  n_prediction_points: 100
+  n_prediction_points: 1000
   n_iterations: 500
   n_layers: 3
  
