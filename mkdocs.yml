@@ -14,5 +14,5 @@ plugins:
 
 nav:
   - Home: index.md
-  - About: about.md
-  - Contact: contact.md
+  - Code Reference: code_reference.md
+  - Developers: contact.md
