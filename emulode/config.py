@@ -7,11 +7,28 @@ import yaml
 
 
 class Config(ABC):
-    """Abstract class for the configuration file."""
+    """
+    Abstract class for the configuration file. This class should be inherited
+    by other configuration classes.
+
+    This defines the basic structure of all the congiguration classes. It
+    contains the `config_dict` which is the dictionary representation of the
+    configuration file and the `required_keys` which is a list of keys that
+    must be present in the configuration file. These checks are performed in
+    the `__init__` method.
+
+    Every configuration class should have a `validate` method which validates
+    the data in the configuration class and a `__repr__` method which returns
+    a string representation of the configuration class.
+
+    Args:
+        config_dict: The dictionary representation of the configuration file
+        required_keys: A list of keys that must be present in the configuration
+            file
+    """
 
     def __init__(self, config_dict: dict, required_keys: list[str]) -> None:
 
-        # self.config = cofig_dict
         self.check_keys(config_dict, required_keys)
 
         for key, value in config_dict.items():
@@ -20,15 +37,19 @@ class Config(ABC):
 
     @abstractmethod
     def validate(self) -> None:
-        """Validate the data."""
+        """Validate the data in the configuration file."""
 
     @abstractmethod
     def __repr__(self) -> str:
-        """Return a string representation of the configuration file."""
+        """Return a string representation of the configuration class."""
 
     @staticmethod
     def check_keys(config, required_keys: list[str]) -> None:
-        """Check that the given keys are present in the config file."""
+        """
+        Checks that the given keys are present in the config file. If not, raises
+        a KeyError. This method is used to check the required keys in the
+        initialization of the configuration base class.
+        """
 
         for key in required_keys:
             if key not in config:
@@ -264,7 +285,24 @@ class PlotterConfig(Config):
 
 @dataclass
 class Configs:
-    """Class for the configuration file."""
+    """
+    Class for storing all configurations given in the configuration file.
+
+    This class organises the configuration parameters into those releated to
+    ODE, solver, simulator, emulator and plotter.
+
+    Args:
+        config_file: The path to the configuration file
+
+        ode: The ODE configurations
+        solver: The solver configurations
+        simulator: The simulator configurations
+        emulator: The emulator configurations
+        plotter: The plotter configurations
+
+    Each of these configurations are instances of the respective configuration
+    classes.
+    """
 
     config_file: os.PathLike
 

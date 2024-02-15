@@ -14,5 +14,8 @@ plugins:
 
 nav:
   - Home: index.md
-  - Code Reference: code_reference.md
+  - Code Reference:
+    - Overall Structure: code_reference.md
+    - Emulation: emulation.md
+    - Configuration: config.md
   - Developers: contact.md
