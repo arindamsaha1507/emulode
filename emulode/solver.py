@@ -1,10 +1,14 @@
 """Module for Solving ODEs."""
 
+import argparse
 from dataclasses import dataclass, field
 from typing import Callable
 
 import numpy as np
 from scipy.integrate import solve_ivp
+
+from emulode.ode import ODE
+from emulode.config import Configs
 
 # from emulode.plotter import Plotter
 
@@ -92,24 +96,32 @@ class Solver:
         self.solve()
         return self.quantity_of_interest(self.results)
 
-    # def phase_plot(
-    #     self, components: tuple[int, int], filename: str = "plots/phase.png"
-    # ) -> None:
-    #     """Plot the results."""
-    #     Plotter.create_basic_plot(
-    #         self.results[components[0], :],
-    #         self.results[components[1], :],
-    #         filename=filename,
-    #     )
 
-    # def timeseries_plot(
-    #     self, component: int, filename: str = "plots/timeseries.png"
-    # ) -> None:
-    #     """Plot the results."""
-    #     time = np.linspace(self.t_initial, self.t_final, self.t_steps)
-    #     time = time[: len(self.results[component, :])]
-    #     Plotter.create_basic_plot(
-    #         time,
-    #         self.results[component, :],
-    #         filename=filename,
-    #     )
+class SolverFactory:
+    """Factory class for the solver."""
+
+    @staticmethod
+    def create_from_config(ode_factory: ODE, configs: Configs) -> Solver:
+        """Create a solver from the given configuration."""
+
+        initial_conditions = configs.solver.initial_conditions
+        t_range = tuple(configs.solver.t_range)
+        n_steps = configs.solver.n_steps
+        transience = configs.solver.transience
+
+        return Solver(
+            ode_factory.function,
+            ode_factory.parameters,
+            initial_conditions,
+            t_range,
+            n_steps,
+            transience,
+        )
+
+    @staticmethod
+    def create_from_commandline_arguments(
+        ode_factory: ODE, args: argparse.Namespace
+    ) -> Solver:
+        """Create a solver from the given command line arguments."""
+
+        raise NotImplementedError("Command line arguments not supported yet")

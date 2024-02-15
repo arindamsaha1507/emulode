@@ -1,6 +1,9 @@
 """Module listing various ODE systems."""
 
+from dataclasses import dataclass
 import numpy as np
+
+from emulode.config import Configs
 
 
 class ParameterError(Exception):
@@ -38,7 +41,7 @@ class Utils:
             raise DimensionError(dim)
 
 
-class ODE:
+class ODEList:
     """Class listing various ODE systems."""
 
     @staticmethod
@@ -176,23 +179,41 @@ class ODE:
         """SEIR system with vaccination, demography, disease induced death and loss of immunity."""
         raise NotImplementedError("This is a work in progress")
 
-        # Utils.check_parameters(params, ["PI", "beta", "sigma", "gamma", "epsilon", "alpha"])
-        # Utils.check_dimension(y, 4)
-        # return np.array(
-        #     [
-        #         params["PI"]-params["beta"] * y[1]*y[0]- params["mu"]*y[0]+params["alpha"]*y[3],
-        #         params["beta"] * y[1]*y[0] - -params["sigma"]*y[1]-params["mu"]*y[1],
-        #         params["sigma"]*y[1]-params["gamma"]*y[2]-params["mu"]*y[2],
-        #         params["gamma"]*(1-params["epsilon"])*y[2]
-        #       - params["mu"] * y[3]-params["alpha"]*y[3],
-        #     ]
-        # )
+
+@dataclass
+class ODE:
+    """Factory class for the ODE function."""
+
+    function: callable
+    parameters: dict[str, float]
+
+
+class ODEFactory:
+    """Factory class for the ODE function."""
+
+    @staticmethod
+    def create_from_config(configs: Configs) -> ODE:
+        """Create an ODE object from the given configs."""
+
+        function = ODEFactory.ode_function_chooser(configs.ode.chosen_ode)
+        parameters = configs.ode.parameters
+
+        return ODE(function, parameters)
+
+    @staticmethod
+    def ode_function_chooser(chosen_ode: str) -> callable:
+        """Choose the ODE function based on the given string."""
+        if chosen_ode == "Rossler":
+            return ODEList.rossler
+        if chosen_ode == "Lorenz":
+            return ODEList.lorenz
+        raise ValueError(f"ODE '{chosen_ode}' not found")
 
 
 if __name__ == "__main__":
     # print(ODE.lorenz(0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}))
     print(
-        ODE.seir_dens_vacc(
+        ODEList.seir_dens_vacc(
             0, np.array([1, 2, 3]), {"sigma": 10, "rho": 28, "beta": 8 / 3}
         )
     )

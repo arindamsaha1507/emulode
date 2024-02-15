@@ -1,9 +1,13 @@
 """Module for the emulator class"""
 
+import argparse
 from dataclasses import dataclass, field
 
 import numpy as np
 import dgpsi
+
+from emulode.simulator import Simulator
+from emulode.config import Configs
 
 
 @dataclass
@@ -94,3 +98,30 @@ class Emulator:
             self.x_train.min(), self.x_train.max(), self.num_predict
         )[:, None].reshape(-1, 1)
         self.y_predict, self.y_var = emul.predict(self.x_predict)
+
+
+class EmulatorFactory:
+    """Factory class for the emulator."""
+
+    simulator: Simulator
+    configs: Configs
+
+    @staticmethod
+    def create_from_config(simulator: Simulator, configs: Configs) -> Emulator:
+        """Create an emulator from the given configuration."""
+
+        n_layers = configs.emulator.n_layers
+        n_predict = configs.emulator.n_prediction_points
+        n_iterations = configs.emulator.n_iterations
+
+        return Emulator(
+            simulator.xdata, simulator.ydata, n_layers, n_predict, n_iterations
+        )
+
+    @staticmethod
+    def create_from_commandline_arguments(
+        simulator: Simulator, args: argparse.Namespace
+    ) -> Emulator:
+        """Create an emulator from the given command line arguments."""
+
+        raise NotImplementedError("Command line arguments not supported yet")

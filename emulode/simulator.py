@@ -1,11 +1,13 @@
 """Module for the simulator class."""
 
+import argparse
 import time
 
 from dataclasses import dataclass, field
 from typing import Callable
 
 import numpy as np
+from emulode.config import Configs
 
 from emulode.solver import Solver
 
@@ -63,3 +65,38 @@ class Simulator:
         print(f"Time taken: {time_end - time_start:.2f} seconds")
 
         return x, y
+
+
+class SimulatorFactory:
+    """Factory class for the simulator."""
+
+    @staticmethod
+    def create_from_config(
+        solver: Solver, configs: Configs, ideal: bool = False
+    ) -> Simulator:
+        """Create a simulator from the given configuration."""
+
+        parameter_of_interest = configs.simulator.parameter_of_interest
+        range_of_interest = tuple(configs.simulator.range)
+
+        if ideal:
+            n_points = configs.emulator.n_prediction_points
+        else:
+            n_points = configs.simulator.n_simulation_points
+
+        return Simulator(
+            solver,
+            parameter_of_interest,
+            range_of_interest[0],
+            range_of_interest[1],
+            n_points,
+            lambda x: max(x[0, :]),
+        )
+
+    @staticmethod
+    def create_from_commandline_arguments(
+        solver: Solver, args: argparse.Namespace
+    ) -> Simulator:
+        """Create a simulator from the given command line arguments."""
+
+        raise NotImplementedError("Command line arguments not supported yet")
