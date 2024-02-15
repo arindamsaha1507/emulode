@@ -83,15 +83,19 @@ class EmulationFactory:
 
         if ideal_run:
             ideal = SimulatorFactory(solver, configs, ideal=True)
-        else:
-            ideal = None
+            return Emulation(
+                configs,
+                solver.solver,
+                simulator.simulator,
+                emulator.emulator,
+                ideal.simulator,
+            )
 
         return Emulation(
             configs,
             solver.solver,
             simulator.simulator,
             emulator.emulator,
-            ideal.simulator,
         )
 
     @staticmethod
