@@ -6,4 +6,4 @@ This python tools provides a clean and easily customisable interface to emulate 
 
 We divide the entire emulation process into the following four distinct steps.
 
-![Steps Flowchart](../assets/emulode.drawio.svg)
+![Steps Flowchart](emulode.drawio.svg)
