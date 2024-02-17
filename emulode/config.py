@@ -43,8 +43,7 @@ class Config(ABC):
     def __repr__(self) -> str:
         """Return a string representation of the configuration class."""
 
-    @staticmethod
-    def check_keys(config, required_keys: list[str]) -> None:
+    def check_keys(self, config, required_keys: list[str]) -> None:
         """
         Checks that the given keys are present in the config file. If not, raises
         a KeyError. This method is used to check the required keys in the
@@ -52,17 +51,35 @@ class Config(ABC):
         """
 
         for key in required_keys:
+
+            if getattr(self, key) is not None:
+                continue
+
             if key not in config:
                 raise KeyError(f"Key '{key}' not found in config file")
 
 
 class ODEConfig(Config):
-    """Class for the ODE configuration file."""
+    """
+    Class for the ODE configuration file.
 
-    def __init__(self, config_dict: dict) -> None:
+    This class contains the chosen ODE and the parameters for the chosen ODE. The
+    `required_keys` for this class are "chosen_ode" and "parameters".
+
+    Args:
+        config_dict: The dictionary representation of the 'ode' part of the configuration file
+
+        chosen_ode: The chosen ODE
+        parameters: The parameters for the chosen ODE
+    """
+
+    def __init__(
+        self, config_dict: dict, chosen_ode: str = None, parameters: dict = None
+    ) -> None:
 
         required_keys = ["chosen_ode", "parameters"]
-        self.chosen_ode: str = None
+        self.chosen_ode: str = chosen_ode
+        self.parameters: dict = parameters
 
         super().__init__(config_dict, required_keys)
 
@@ -92,15 +109,35 @@ class ODEConfig(Config):
 
 
 class SolverConfig(Config):
-    """Class for the solver configuration file."""
+    """
+    Class for the solver configuration file.
 
-    def __init__(self, config_dict: dict) -> None:
+    This class contains parameters related to the solver. The `required_keys` for
+    this class are "initial_conditions", "t_range", "n_steps" and "transience".
+
+    Args:
+        config_dict: The dictionary representation of the 'solver' part of the configuration file
+
+        initial_conditions: The initial conditions for the ODE
+        t_range: The time range for the simulation in the form [t_initial, t_final]
+        n_steps: The number of steps for the simulation
+        transience: The transience for the simulation (as a fraction between 0 and 1)
+    """
+
+    def __init__(
+        self,
+        config_dict: dict,
+        initial_conditions: list[float] = None,
+        t_range: list[float] = None,
+        n_steps: int = None,
+        transience: float = None,
+    ) -> None:
 
         required_keys = ["initial_conditions", "t_range", "n_steps", "transience"]
-        self.initial_conditions: list[float] = None
-        self.t_range: list[float] = None
-        self.n_steps: int = None
-        self.transience: float = None
+        self.initial_conditions: list[float] = initial_conditions
+        self.t_range: list[float] = t_range
+        self.n_steps: int = n_steps
+        self.transience: float = transience
 
         super().__init__(config_dict, required_keys)
 
@@ -154,20 +191,37 @@ class SolverConfig(Config):
 
 
 class SimulatorConfig(Config):
-    """Class for the simulator configuration file."""
+    """
+    Class for the simulator configuration file.
 
-    def __init__(self, config_dict: dict) -> None:
+    This class contains parameters related to the simulator. The `required_keys` for
+    this class are "parameter_of_interest", "range" and
+    "n_simulation_points".
+
+    Args:
+        config_dict: The dictionary representation of the 'simulator' part of the configuration file
+
+        parameter_of_interest: The parameter of interest (Must be one of parameters in ODE)
+        parameter_range: The range for the simulation in the form (min, max)
+        n_simulation_points: The number of simulation points
+    """
+
+    def __init__(
+        self,
+        config_dict: dict,
+        parameter_of_interest: str = None,
+        parameter_range: tuple[float] = None,
+        n_simulation_points: int = None,
+    ) -> None:
 
         required_keys = [
             "parameter_of_interest",
-            "component_of_interest",
             "range",
             "n_simulation_points",
         ]
-        self.parameter_of_interest: str = None
-        self.component_of_interest: int = None
-        self.range: tuple[float] = None
-        self.n_simulation_points: int = None
+        self.parameter_of_interest = parameter_of_interest
+        self.range = parameter_range
+        self.n_simulation_points = n_simulation_points
 
         super().__init__(config_dict, required_keys)
 
@@ -176,9 +230,6 @@ class SimulatorConfig(Config):
         if not isinstance(self.parameter_of_interest, str):
             print(self.parameter_of_interest)
             raise ValueError("Parameter of interest must be a string")
-
-        if not isinstance(self.component_of_interest, int):
-            raise ValueError("Component of interest must be an integer")
 
         if not isinstance(self.range, list):
             raise ValueError("Range must be a tuple")
@@ -197,21 +248,38 @@ class SimulatorConfig(Config):
         return (
             f"Simulator\n=========\n"
             f"Parameter of interest: {self.parameter_of_interest}\n"
-            f"Component of interest: {self.component_of_interest}\n"
             f"Range: {self.range}\n"
             f"Number of simulation points: {self.n_simulation_points}\n"
         )
 
 
 class EmulatorConfig(Config):
-    """Class for the emulator configuration file."""
+    """
+    Class for the emulator configuration file.
 
-    def __init__(self, config_dict: dict) -> None:
+    This class contains parameters related to the emulator. The `required_keys` for
+    this class are "n_layers", "n_prediction_points" and "n_iterations".
+
+    Args:
+        config_dict: The dictionary representation of the 'emulator' part of the configuration file
+
+        n_layers: The number of layers in the emulator
+        n_prediction_points: The number of prediction points
+        n_iterations: The number of iterations for the emulator
+    """
+
+    def __init__(
+        self,
+        config_dict: dict,
+        n_layers: int = None,
+        n_prediction_points: int = None,
+        n_iterations: int = None,
+    ) -> None:
 
         required_keys = ["n_layers", "n_prediction_points", "n_iterations"]
-        self.n_layers: int = None
-        self.n_prediction_points: int = None
-        self.n_iterations: int = None
+        self.n_layers: int = n_layers
+        self.n_prediction_points: int = n_prediction_points
+        self.n_iterations: int = n_iterations
 
         super().__init__(config_dict, required_keys)
 
@@ -246,15 +314,35 @@ class EmulatorConfig(Config):
 
 
 class PlotterConfig(Config):
-    """Class for the plotter configuration file."""
+    """
+    Class for the plotter configuration file.
 
-    def __init__(self, config_dict: dict) -> None:
+    This class contains parameters related to the plotter. The `required_keys` for
+    this class are "directory", "filename", "x_label" and "y_label".
+
+    Args:
+        config_dict: The dictionary representation of the 'plotter' part of the configuration file
+
+        directory: The directory to save the plot
+        filename: The filename for the plot
+        x_label: The x label for the plot
+        y_label: The y label for the plot
+    """
+
+    def __init__(
+        self,
+        config_dict: dict,
+        directory: str = None,
+        filename: str = None,
+        x_label: str = None,
+        y_label: str = None,
+    ) -> None:
 
         required_keys = ["directory", "filename", "x_label", "y_label"]
-        self.directory: str = None
-        self.filename: str = None
-        self.x_label: str = None
-        self.y_label: str = None
+        self.directory: str = directory
+        self.filename: str = filename
+        self.x_label: str = x_label
+        self.y_label: str = y_label
 
         super().__init__(config_dict, required_keys)
 

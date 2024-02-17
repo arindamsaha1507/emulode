@@ -29,7 +29,6 @@ class Solver:
     results: np.ndarray = field(init=False, repr=False)
 
     parameter_of_interest: str = field(init=False, repr=False)
-    component_of_interest: int = field(init=False, repr=False)
     quantity_of_interest: Callable[[np.ndarray], float] = field(init=False, repr=False)
 
     def __post_init__(self) -> None:

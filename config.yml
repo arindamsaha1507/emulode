@@ -26,7 +26,6 @@ solver:
 simulator:
 
   parameter_of_interest: rho
-  component_of_interest: 0
   range: [2, 12]
   n_simulation_points: 5
 

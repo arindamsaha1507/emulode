@@ -17,3 +17,42 @@ The `ode`, `solver`, `simulation`, `emulation` and `plotter` members are instanc
     options:
         members:
         - 
+
+The `Config` abstract base class is used to define the configuration parameters for the `ode`, `solver`, `simulation`, `emulation` and `plotter` members of the `Configs` class.
+
+## ODEConfig class
+
+::: emulode.config.ODEConfig
+    options:
+        members:
+        -
+
+## SolverConfig class
+
+::: emulode.config.SolverConfig
+    options:
+        members:
+        -
+
+## SimulatorConfig class
+
+::: emulode.config.SimulatorConfig
+    options:
+        members:
+        -
+
+## EmulatorConfig class
+
+::: emulode.config.EmulatorConfig
+    options:
+        members:
+        -
+
+
+## PlotterConfig class
+
+::: emulode.config.PlotterConfig
+    options:
+        members:
+        -
+
