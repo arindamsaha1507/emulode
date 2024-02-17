@@ -1105,6 +1105,9 @@ file</p>
 
 
 </div><p>The <code>Config</code> abstract base class is used to define the configuration parameters for the <code>ode</code>, <code>solver</code>, <code>simulation</code>, <code>emulation</code> and <code>plotter</code> members of the <code>Configs</code> class.</p>
+<blockquote>
+<p><strong>Note:</strong> In the following classes, all parameters other than <code>config_dict</code> are optional. The <code>config_dict</code> parameter is a dictionary containing the default configuration parameters (as typically read from a configuration file). The optional parameters if provided will override the parameters in the <code>config_dict</code> dictionary.</p>
+</blockquote>
 <h2 id="odeconfig-class">ODEConfig class</h2>
 
 
