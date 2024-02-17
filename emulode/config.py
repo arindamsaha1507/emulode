@@ -133,6 +133,8 @@ class SolverConfig(Config):
         transience: float = None,
     ) -> None:
 
+        # pylint: disable=too-many-arguments
+
         required_keys = ["initial_conditions", "t_range", "n_steps", "transience"]
         self.initial_conditions: list[float] = initial_conditions
         self.t_range: list[float] = t_range
@@ -337,6 +339,8 @@ class PlotterConfig(Config):
         x_label: str = None,
         y_label: str = None,
     ) -> None:
+
+        # pylint: disable=too-many-arguments
 
         required_keys = ["directory", "filename", "x_label", "y_label"]
         self.directory: str = directory
