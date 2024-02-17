@@ -20,6 +20,8 @@ The `ode`, `solver`, `simulation`, `emulation` and `plotter` members are instanc
 
 The `Config` abstract base class is used to define the configuration parameters for the `ode`, `solver`, `simulation`, `emulation` and `plotter` members of the `Configs` class.
 
+> **Note:** In the following classes, all parameters other than `config_dict` are optional. The `config_dict` parameter is a dictionary containing the default configuration parameters (as typically read from a configuration file). The optional parameters if provided will override the parameters in the `config_dict` dictionary.
+
 ## ODEConfig class
 
 ::: emulode.config.ODEConfig
