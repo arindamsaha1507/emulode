@@ -27,14 +27,14 @@ simulator:
 
   parameter_of_interest: rho
   range: [2, 12]
-  n_simulation_points: 5
+  n_simulation_points: 10
 
 
 emulator:
 
   n_prediction_points: 1000
   n_iterations: 500
-  n_layers: 5
+  n_layers: 2
  
 
 plotter:

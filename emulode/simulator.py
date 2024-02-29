@@ -1,15 +1,23 @@
 """Module for the simulator class."""
 
 import argparse
+from enum import Enum
 import time
 
 from dataclasses import dataclass, field
 from typing import Callable
 
 import numpy as np
-from emulode.config import Configs
+from scipy.stats import qmc
 
+from emulode.config import Configs
 from emulode.solver import Solver
+
+
+class Sampler(Enum):
+
+    latin_hypercube = "latin_hypercube"
+    uniform = "uniform"
 
 
 @dataclass
@@ -52,12 +60,24 @@ class Simulator:
         self.xdata = self.xdata[:, None]
         self.ydata = self.ydata.reshape(-1, 1)
 
+    def prepare_x_data(self, sampling_method: Sampler) -> np.ndarray:
+        if sampling_method == Sampler.latin_hypercube:
+            sampler = qmc.LatinHypercube(d=1)
+            sample = sampler.random(n=self.num_points)
+            x = qmc.scale(sample, self.parameter_start, self.parameter_end).flatten()
+            x.sort()
+        elif sampling_method == Sampler.uniform:
+            x = np.linspace(self.parameter_start, self.parameter_end, self.num_points)
+        else:
+            raise ValueError("Invalid sampling method")
+        return x
+
     def create_data(self) -> tuple[np.ndarray, np.ndarray]:
         """Create data for the given solver."""
 
         time_start = time.time()
 
-        x = np.linspace(self.parameter_start, self.parameter_end, self.num_points)
+        x = self.prepare_x_data(Sampler.uniform)
         y = np.array([self.solver.evaluate_at_point(xi) for xi in x])
 
         time_end = time.time()
