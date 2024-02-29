@@ -28,6 +28,7 @@ simulator:
   parameter_of_interest: rho
   range: [2, 12]
   n_simulation_points: 10
+  sampling_method: latin_hypercube
 
 
 emulator:

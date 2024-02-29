@@ -11,14 +11,8 @@ import numpy as np
 from scipy.stats import qmc
 
 from emulode.config import Configs
+from emulode.globals import Sampler
 from emulode.solver import Solver
-
-
-class Sampler(Enum):
-
-    latin_hypercube = "latin_hypercube"
-    uniform = "uniform"
-
 
 @dataclass
 class Simulator:
@@ -31,6 +25,7 @@ class Simulator:
     parameter_start: float
     parameter_end: float
     num_points: int
+    sampling_method: Sampler
     function_of_interest: Callable[[np.ndarray], float] = field(default=None)
 
     xdata: np.ndarray = field(init=False, repr=False)
@@ -77,7 +72,7 @@ class Simulator:
 
         time_start = time.time()
 
-        x = self.prepare_x_data(Sampler.uniform)
+        x = self.prepare_x_data(self.sampling_method)
         y = np.array([self.solver.evaluate_at_point(xi) for xi in x])
 
         time_end = time.time()
@@ -98,6 +93,7 @@ class SimulatorFactory:
 
         parameter_of_interest = configs.simulator.parameter_of_interest
         range_of_interest = tuple(configs.simulator.range)
+        sampling_method = Sampler(configs.simulator.sampling_method)
 
         if ideal:
             n_points = configs.emulator.n_prediction_points
@@ -110,6 +106,7 @@ class SimulatorFactory:
             range_of_interest[0],
             range_of_interest[1],
             n_points,
+            sampling_method,
             lambda x: max(x[0, :]),
         )
 

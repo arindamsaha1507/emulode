@@ -5,6 +5,8 @@ from dataclasses import dataclass, field
 import os
 import yaml
 
+from emulode.globals import Sampler
+
 
 class Config(ABC):
     """
@@ -214,16 +216,19 @@ class SimulatorConfig(Config):
         parameter_of_interest: str = None,
         parameter_range: tuple[float] = None,
         n_simulation_points: int = None,
+        sampling_method: Sampler = None,
     ) -> None:
 
         required_keys = [
             "parameter_of_interest",
             "range",
             "n_simulation_points",
+            "sampling_method",
         ]
         self.parameter_of_interest = parameter_of_interest
         self.range = parameter_range
         self.n_simulation_points = n_simulation_points
+        self.sampling_method = sampling_method
 
         super().__init__(config_dict, required_keys)
 
