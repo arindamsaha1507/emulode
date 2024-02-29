@@ -91,10 +91,7 @@ class Plotter:
 
         ax.legend()
 
-        directory = os.path.dirname(configs.plotter.directory)
-
-        if directory:
-            os.makedirs(directory, exist_ok=True)
+        os.makedirs(configs.plotter.directory, exist_ok=True)
 
         filename = os.path.join(configs.plotter.directory, configs.plotter.filename)
 
