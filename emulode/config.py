@@ -219,6 +219,8 @@ class SimulatorConfig(Config):
         sampling_method: Sampler = None,
     ) -> None:
 
+        # pylint: disable=too-many-arguments
+
         required_keys = [
             "parameter_of_interest",
             "range",

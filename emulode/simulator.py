@@ -1,7 +1,6 @@
 """Module for the simulator class."""
 
 import argparse
-from enum import Enum
 import time
 
 from dataclasses import dataclass, field
@@ -13,6 +12,7 @@ from scipy.stats import qmc
 from emulode.config import Configs
 from emulode.globals import Sampler
 from emulode.solver import Solver
+
 
 @dataclass
 class Simulator:
@@ -56,12 +56,14 @@ class Simulator:
         self.ydata = self.ydata.reshape(-1, 1)
 
     def prepare_x_data(self, sampling_method: Sampler) -> np.ndarray:
-        if sampling_method == Sampler.latin_hypercube:
+        """Prepare the x data for the given sampling method."""
+
+        if sampling_method == Sampler.LATIN_HYPERCUBE:
             sampler = qmc.LatinHypercube(d=1)
             sample = sampler.random(n=self.num_points)
             x = qmc.scale(sample, self.parameter_start, self.parameter_end).flatten()
             x.sort()
-        elif sampling_method == Sampler.uniform:
+        elif sampling_method == Sampler.UNIFORN:
             x = np.linspace(self.parameter_start, self.parameter_end, self.num_points)
         else:
             raise ValueError("Invalid sampling method")
