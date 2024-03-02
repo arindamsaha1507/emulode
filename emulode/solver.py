@@ -1,5 +1,6 @@
 """Module for Solving ODEs."""
 
+from abc import ABC, abstractmethod
 import argparse
 from dataclasses import dataclass, field
 from typing import Callable
@@ -13,8 +14,24 @@ from emulode.config import Configs
 # from emulode.plotter import Plotter
 
 
+class Solver(ABC):
+    """Base class for the solver."""
+
+    @abstractmethod
+    def solve(self) -> None:
+        """Abstract method for solving the system at one point."""
+
+    @abstractmethod
+    def set_varying_settings(self, parameter: str, qoi: Callable = None) -> None:
+        """Abstract method for setting the parameter and quantity of interest."""
+
+    @abstractmethod
+    def evaluate_at_point(self, parameter: float) -> float:
+        """Abstract method for evaluating the quantity of interest for the given parameter."""
+
+
 @dataclass
-class Solver:
+class ODESolver(Solver):
     """Class for solving ODEs."""
 
     # pylint: disable=too-many-instance-attributes
@@ -100,7 +117,7 @@ class SolverFactory:
     """Factory class for the solver."""
 
     @staticmethod
-    def create_from_config(ode_factory: ODE, configs: Configs) -> Solver:
+    def create_from_config(ode_factory: ODE, configs: Configs) -> ODESolver:
         """Create a solver from the given configuration."""
 
         initial_conditions = configs.solver.initial_conditions
@@ -108,7 +125,7 @@ class SolverFactory:
         n_steps = configs.solver.n_steps
         transience = configs.solver.transience
 
-        return Solver(
+        return ODESolver(
             ode_factory.function,
             ode_factory.parameters,
             initial_conditions,
