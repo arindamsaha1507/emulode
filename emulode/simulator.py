@@ -11,7 +11,8 @@ from scipy.stats import qmc
 
 from emulode.config import Configs
 from emulode.globals import Sampler
-from emulode.solver import Solver
+from emulode.qoi import QoI
+from emulode.solver import ODESolver, Solver
 
 
 @dataclass
@@ -20,8 +21,9 @@ class Simulator:
 
     # pylint: disable=too-many-instance-attributes
 
-    solver: Solver
+    solver: ODESolver
     varying_parameter: str
+    result_dimension: int
     parameter_start: float
     parameter_end: float
     num_points: int
@@ -47,7 +49,7 @@ class Simulator:
             raise ValueError("varying_parameter must be a parameter of the ODE or 't'")
 
         self.solver.set_varying_settings(
-            self.varying_parameter, self.function_of_interest
+            self.varying_parameter, self.function_of_interest, self.result_dimension
         )
 
         self.xdata, self.ydata = self.create_data()
@@ -94,6 +96,7 @@ class SimulatorFactory:
         """Create a simulator from the given configuration."""
 
         parameter_of_interest = configs.simulator.parameter_of_interest
+        result_dimension = configs.simulator.result_dimension
         range_of_interest = tuple(configs.simulator.range)
         sampling_method = Sampler(configs.simulator.sampling_method)
 
@@ -105,11 +108,12 @@ class SimulatorFactory:
         return Simulator(
             solver,
             parameter_of_interest,
+            result_dimension,
             range_of_interest[0],
             range_of_interest[1],
             n_points,
             sampling_method,
-            lambda x: max(x[0, :]),
+            QoI.max_value,
         )
 
     @staticmethod

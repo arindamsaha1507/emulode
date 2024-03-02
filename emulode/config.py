@@ -214,6 +214,7 @@ class SimulatorConfig(Config):
         self,
         config_dict: dict,
         parameter_of_interest: str = None,
+        result_dimension: int = None,
         parameter_range: tuple[float] = None,
         n_simulation_points: int = None,
         sampling_method: Sampler = None,
@@ -223,11 +224,13 @@ class SimulatorConfig(Config):
 
         required_keys = [
             "parameter_of_interest",
+            "result_dimension",
             "range",
             "n_simulation_points",
             "sampling_method",
         ]
         self.parameter_of_interest = parameter_of_interest
+        self.result_dimension = result_dimension
         self.range = parameter_range
         self.n_simulation_points = n_simulation_points
         self.sampling_method = sampling_method
