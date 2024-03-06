@@ -2,3 +2,4 @@ dgpsi>=2.4.0
 matplotlib>=3.5.0
 numpy>=1.26.3
 scipy>=1.12.0
+mogp-emulator>=0.7.2
