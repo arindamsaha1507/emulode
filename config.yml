@@ -27,7 +27,7 @@ simulator:
 
   parameter_of_interest: rho
   result_dimension: 0
-  range: [2, 12]
+  range: [2, 20]
   n_simulation_points: 10
   sampling_method: latin_hypercube
 

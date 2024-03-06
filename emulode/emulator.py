@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 import dgpsi
+import mogp_emulator
 
 from emulode.simulator import Simulator
 from emulode.config import Configs
@@ -55,8 +56,32 @@ class Emulator:
         if self.num_training_iterations <= 0:
             raise ValueError("num_training_iterations must be positive")
 
-        self.create_model()
-        self.predict()
+        if self.num_layers == 1:
+            self.create_mogp()
+        else:
+            self.create_dgp()
+            self.predict()
+
+    def create_mogp(self) -> None:
+        """Create the emulator model."""
+
+        self.x_train = self.x_train.flatten()
+        self.y_train = self.y_train.flatten()
+
+        if self.kernel_function == KernelFunction.MATERN:
+            self.model = mogp_emulator.fit_GP_MAP(
+                self.x_train, self.y_train, kernel="Matern52"
+            )
+        elif self.kernel_function == KernelFunction.SQUARED_EXPONENTIAL:
+            self.model = mogp_emulator.fit_GP_MAP(self.x_train, self.y_train)
+        else:
+            raise ValueError("Invalid kernel function")
+
+        self.x_predict = np.linspace(
+            self.x_train.min(), self.x_train.max(), self.num_predict
+        )
+
+        self.y_predict, self.y_var, _ = self.model.predict(self.x_predict)
 
     def create_layer(
         self,
@@ -88,7 +113,7 @@ class Emulator:
 
         return dgpsi.combine(*layers)
 
-    def create_model(self) -> None:
+    def create_dgp(self) -> None:
         """Create the emulator model."""
 
         layers = self.create_all_layers()
