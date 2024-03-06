@@ -2,20 +2,13 @@
 
 import argparse
 from dataclasses import dataclass, field
-from enum import Enum
 
 import numpy as np
 import dgpsi
 
 from emulode.simulator import Simulator
 from emulode.config import Configs
-
-
-class KernelFunction(Enum):
-    """Enum for the kernel function."""
-
-    MATERN = "matern2.5"
-    SQUARED_EXPONENTIAL = "sexp"
+from emulode.globals import KernelFunction
 
 
 @dataclass
