@@ -4,6 +4,7 @@ import numpy as np
 
 
 class QoI:
+    """Quality of interest (QoI) functions."""
 
     @staticmethod
     def max_value(results: np.ndarray) -> float:
