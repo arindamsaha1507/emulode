@@ -31,7 +31,9 @@ class Plotter:
         if yvar is not None:
             yvar = yvar.flatten()
             ax.plot(xdata, ydata, style, label=legend)
-            ax.fill_between(xdata, ydata - yvar, ydata + yvar, color="gray", alpha=0.3)
+            ax.fill_between(
+                xdata, ydata - 1.96 * yvar, ydata + 1.96 * yvar, color="gray", alpha=0.3
+            )
         elif legend == "ideal":
             ax.plot(xdata, ydata, style, label=legend)
         else:
