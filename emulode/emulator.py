@@ -2,12 +2,20 @@
 
 import argparse
 from dataclasses import dataclass, field
+from enum import Enum
 
 import numpy as np
 import dgpsi
 
 from emulode.simulator import Simulator
 from emulode.config import Configs
+
+
+class KernelFunction(Enum):
+    """Enum for the kernel function."""
+
+    MATERN = "matern2.5"
+    SQUARED_EXPONENTIAL = "sexp"
 
 
 @dataclass
@@ -56,7 +64,11 @@ class Emulator:
         self.create_model()
         self.predict()
 
-    def create_layer(self, scale_est: bool = False) -> list[dgpsi.kernel]:
+    def create_layer(
+        self,
+        scale_est: bool = False,
+        kernal_function: KernelFunction = KernelFunction.MATERN,
+    ) -> list[dgpsi.kernel]:
         """Create single layer of the emulator.
 
         Args:
@@ -66,7 +78,9 @@ class Emulator:
             The layer of the emulator
         """
 
-        return [dgpsi.kernel(length=np.array([1.0]), scale_est=scale_est)]
+        name = kernal_function.value
+
+        return [dgpsi.kernel(length=np.array([1.0]), scale_est=scale_est, name=name)]
 
     def create_all_layers(self) -> list:
         """Create all layers of the emulator."""
