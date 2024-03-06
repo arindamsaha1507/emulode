@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 import os
 import yaml
 
-from emulode.globals import Sampler
+from emulode.globals import KernelFunction, Sampler
 
 
 class Config(ABC):
@@ -286,12 +286,21 @@ class EmulatorConfig(Config):
         n_layers: int = None,
         n_prediction_points: int = None,
         n_iterations: int = None,
+        kernel_function: KernelFunction = None,
     ) -> None:
 
-        required_keys = ["n_layers", "n_prediction_points", "n_iterations"]
+        # pylint: disable=too-many-arguments
+
+        required_keys = [
+            "n_layers",
+            "n_prediction_points",
+            "n_iterations",
+            "kernel_function",
+        ]
         self.n_layers: int = n_layers
         self.n_prediction_points: int = n_prediction_points
         self.n_iterations: int = n_iterations
+        self.kernel_function: KernelFunction = kernel_function
 
         super().__init__(config_dict, required_keys)
 

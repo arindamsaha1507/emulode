@@ -36,6 +36,7 @@ class Emulator:
     num_layers: int
     num_predict: int
     num_training_iterations: int
+    kernel_function: KernelFunction
 
     model: dgpsi.dgp = field(init=False)
     x_predict: np.ndarray = field(init=False, repr=False)
@@ -60,7 +61,6 @@ class Emulator:
     def create_layer(
         self,
         scale_est: bool = False,
-        kernal_function: KernelFunction = KernelFunction.MATERN,
     ) -> list[dgpsi.kernel]:
         """Create single layer of the emulator.
 
@@ -71,7 +71,7 @@ class Emulator:
             The layer of the emulator
         """
 
-        name = kernal_function.value
+        name = self.kernel_function.value
 
         return [dgpsi.kernel(length=np.array([1.0]), scale_est=scale_est, name=name)]
 
@@ -120,9 +120,15 @@ class EmulatorFactory:
         n_layers = configs.emulator.n_layers
         n_predict = configs.emulator.n_prediction_points
         n_iterations = configs.emulator.n_iterations
+        kernel_function = KernelFunction(configs.emulator.kernel_function)
 
         return Emulator(
-            simulator.xdata, simulator.ydata, n_layers, n_predict, n_iterations
+            simulator.xdata,
+            simulator.ydata,
+            n_layers,
+            n_predict,
+            n_iterations,
+            kernel_function,
         )
 
     @staticmethod
