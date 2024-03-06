@@ -43,5 +43,5 @@ plotter:
 
   directory: plots
   filename: plot_test.png
-  x_label: Time
-  y_label: Maximum
+  x_label: Model Parameter
+  y_label: Model Output
