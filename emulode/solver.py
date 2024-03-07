@@ -11,6 +11,7 @@ from scipy.integrate import solve_ivp
 
 from emulode.ode import ODE
 from emulode.config import Configs
+from emulode.qoi import QoI
 
 # from emulode.plotter import Plotter
 
@@ -21,21 +22,15 @@ class Solver(ABC):
 
     params: dict[str, float]
 
-    results: np.ndarray = field(init=False, repr=False)
+    parameter_of_interest: str
+    result_dimension: int
+    quantity_of_interest: Callable[[np.ndarray], float]
 
-    parameter_of_interest: str = field(init=False, repr=False)
-    result_dimension: int = field(init=False, repr=False)
-    quantity_of_interest: Callable[[np.ndarray], float] = field(init=False, repr=False)
+    results: np.ndarray = field(init=False, repr=False)
 
     @abstractmethod
     def solve(self) -> None:
         """Abstract method for solving the system at one point."""
-
-    @abstractmethod
-    def set_varying_settings(
-        self, parameter: str, qoi: Callable = None, result_dim: int = None
-    ) -> None:
-        """Abstract method for setting the parameter and quantity of interest."""
 
     @abstractmethod
     def evaluate_at_point(self, parameter: float) -> float:
@@ -98,18 +93,6 @@ class ODESolver(Solver):
 
         self.results = sol.y[:, self.transience :]
 
-    def set_varying_settings(
-        self, parameter: str, qoi: Callable = None, result_dim: int = None
-    ) -> None:
-        """Set the parameter and quantity of interest."""
-
-        if parameter not in self.params:
-            raise ValueError(f"Parameter '{parameter}' not found")
-
-        self.parameter_of_interest = parameter
-        self.quantity_of_interest = qoi
-        self.result_dimension = result_dim
-
     def evaluate_at_point(self, parameter: float) -> float:
         """Evaluate the quantity of interest for the given parameter."""
 
@@ -165,18 +148,16 @@ class SolverFactory:
     def create_ode_solver_from_config(ode: ODE, configs: Configs) -> ODESolver:
         """Create a solver from the given configuration."""
 
-        initial_conditions = configs.solver.initial_conditions
-        t_range = tuple(configs.solver.t_range)
-        n_steps = configs.solver.n_steps
-        transience = configs.solver.transience
-
         return ODESolver(
             ode.parameters,
+            configs.simulator.parameter_of_interest,
+            configs.simulator.result_dimension,
+            QoI.max_value,
             ode.function,
-            initial_conditions,
-            t_range,
-            n_steps,
-            transience,
+            configs.solver.initial_conditions,
+            configs.solver.t_range,
+            configs.solver.n_steps,
+            configs.solver.transience,
         )
 
     @staticmethod
@@ -197,7 +178,7 @@ if __name__ == "__main__":
 
     prefix_commands = ["cd ~/moving_agents", "source .venv/bin/activate"]
 
-    solver = CommandlineSolver(
-        params, run_command, replacement_prefix, results_file, prefix_commands
-    )
-    solver.solve()
+    # solver = CommandlineSolver(
+    #     params, run_command, replacement_prefix, results_file, prefix_commands
+    # )
+    # solver.solve()
