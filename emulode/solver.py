@@ -125,7 +125,7 @@ class SolverFactory:
     """Factory class for the solver."""
 
     @staticmethod
-    def create_ode_solver_from_config(ode_factory: ODE, configs: Configs) -> ODESolver:
+    def create_ode_solver_from_config(ode: ODE, configs: Configs) -> ODESolver:
         """Create a solver from the given configuration."""
 
         initial_conditions = configs.solver.initial_conditions
@@ -134,8 +134,8 @@ class SolverFactory:
         transience = configs.solver.transience
 
         return ODESolver(
-            ode_factory.parameters,
-            ode_factory.function,
+            ode.parameters,
+            ode.function,
             initial_conditions,
             t_range,
             n_steps,
