@@ -14,15 +14,20 @@ from emulode.config import Configs
 # from emulode.plotter import Plotter
 
 
+@dataclass
 class Solver(ABC):
     """Base class for the solver."""
+
+    params: dict[str, float]
 
     @abstractmethod
     def solve(self) -> None:
         """Abstract method for solving the system at one point."""
 
     @abstractmethod
-    def set_varying_settings(self, parameter: str, qoi: Callable = None) -> None:
+    def set_varying_settings(
+        self, parameter: str, qoi: Callable = None, result_dim: int = None
+    ) -> None:
         """Abstract method for setting the parameter and quantity of interest."""
 
     @abstractmethod
@@ -37,7 +42,6 @@ class ODESolver(Solver):
     # pylint: disable=too-many-instance-attributes
 
     ode: Callable[[float, np.ndarray, dict[str, float]], np.ndarray]
-    params: dict[str, float]
     initial_conditions: np.ndarray
     t_span: tuple[float, float]
     t_steps: int
@@ -121,7 +125,7 @@ class SolverFactory:
     """Factory class for the solver."""
 
     @staticmethod
-    def create_from_config(ode_factory: ODE, configs: Configs) -> ODESolver:
+    def create_ode_solver_from_config(ode_factory: ODE, configs: Configs) -> ODESolver:
         """Create a solver from the given configuration."""
 
         initial_conditions = configs.solver.initial_conditions
@@ -130,8 +134,8 @@ class SolverFactory:
         transience = configs.solver.transience
 
         return ODESolver(
-            ode_factory.function,
             ode_factory.parameters,
+            ode_factory.function,
             initial_conditions,
             t_range,
             n_steps,

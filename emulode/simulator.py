@@ -12,7 +12,7 @@ from scipy.stats import qmc
 from emulode.config import Configs
 from emulode.globals import Sampler
 from emulode.qoi import QoI
-from emulode.solver import ODESolver, Solver
+from emulode.solver import Solver
 
 
 @dataclass
@@ -21,7 +21,7 @@ class Simulator:
 
     # pylint: disable=too-many-instance-attributes
 
-    solver: ODESolver
+    solver: Solver
     varying_parameter: str
     result_dimension: int
     parameter_start: float
