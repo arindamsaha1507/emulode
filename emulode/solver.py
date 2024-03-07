@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 import argparse
 from dataclasses import dataclass, field
+import os
 from typing import Callable
 
 import numpy as np
@@ -19,6 +20,12 @@ class Solver(ABC):
     """Base class for the solver."""
 
     params: dict[str, float]
+
+    results: np.ndarray = field(init=False, repr=False)
+
+    parameter_of_interest: str = field(init=False, repr=False)
+    result_dimension: int = field(init=False, repr=False)
+    quantity_of_interest: Callable[[np.ndarray], float] = field(init=False, repr=False)
 
     @abstractmethod
     def solve(self) -> None:
@@ -46,12 +53,6 @@ class ODESolver(Solver):
     t_span: tuple[float, float]
     t_steps: int
     transience: int | float
-
-    results: np.ndarray = field(init=False, repr=False)
-
-    parameter_of_interest: str = field(init=False, repr=False)
-    result_dimension: int = field(init=False, repr=False)
-    quantity_of_interest: Callable[[np.ndarray], float] = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         """Check that the given parameters are valid."""
@@ -121,6 +122,42 @@ class ODESolver(Solver):
         return self.quantity_of_interest(self.results[self.result_dimension, :])
 
 
+@dataclass
+class CommandlineSolver(Solver):
+    """Class for solving ODEs from command line arguments."""
+
+    run_command: str
+    replacement_prefix: str
+    results_file: os.PathLike
+
+    prefix_commands: list[str] = field(default_factory=list)
+
+    def solve(self) -> None:
+        """Simulate the system at one point."""
+
+        command = self.run_command
+        for param, value in self.params.items():
+            command = command.replace(f"{self.replacement_prefix}{param}", str(value))
+
+        for prefix_command in self.prefix_commands[::-1]:
+            command = f"{prefix_command}; {command}"
+
+        command = f"bash -c '{command}'"
+
+        print(f"Running command: {command}")
+        os.system(command)
+
+    def set_varying_settings(
+        self, parameter: str, qoi: Callable = None, result_dim: int = None
+    ) -> None:
+        """Set the parameter and quantity of interest."""
+        raise NotImplementedError("Command line arguments not supported yet")
+
+    def evaluate_at_point(self, parameter: float) -> float:
+        """Evaluate the quantity of interest for the given parameter."""
+        raise NotImplementedError("Command line arguments not supported yet")
+
+
 class SolverFactory:
     """Factory class for the solver."""
 
@@ -149,3 +186,18 @@ class SolverFactory:
         """Create a solver from the given command line arguments."""
 
         raise NotImplementedError("Command line arguments not supported yet")
+
+
+if __name__ == "__main__":
+
+    run_command = "python moving_agents.py --mode $mode --movement_scale_factor $msf --num_runs 100"
+    params = {"mode": 1, "msf": 2}
+    replacement_prefix = "$"
+    results_file = "results.txt"
+
+    prefix_commands = ["cd ~/moving_agents", "source .venv/bin/activate"]
+
+    solver = CommandlineSolver(
+        params, run_command, replacement_prefix, results_file, prefix_commands
+    )
+    solver.solve()
