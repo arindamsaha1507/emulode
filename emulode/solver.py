@@ -159,7 +159,24 @@ class SolverFactory:
     def create_from_commandline_arguments(configs: Configs) -> CommandlineSolver:
         """Create a solver from the given command line arguments."""
 
-        raise NotImplementedError("Command line arguments not supported yet")
+        rum_command = configs.solver.run_command
+        params = configs.simulation.parameters
+        replacement_prefix = configs.solver.replacement_prefix
+        results_file = configs.solver.results_file
+        prefix_commands = configs.solver.prefix_commands
+        parameter_of_interest = configs.simulator.parameter_of_interest
+        result_dimension = configs.simulator.result_dimension
+
+        return CommandlineSolver(
+            params,
+            parameter_of_interest,
+            result_dimension,
+            QoI.max_value,
+            rum_command,
+            replacement_prefix,
+            results_file,
+            prefix_commands,
+        )
 
 
 def testing() -> None:

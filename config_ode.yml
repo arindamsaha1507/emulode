@@ -4,25 +4,23 @@ simulation:
   name: Lorenz
 
   parameters:
-    sigma: 10
-    rho: 28
-    beta: 2.667
+    mode: 1
+    msf: 1.0
 
 solver:
 
-  t_range: [0, 100]
-  n_steps: 1000
-  transience: 0.8
-
-  initial_conditions: [1, 1, 1]
+  run_command: python moving_agents.py --mode $mode --movement_scale_factor $msf --num_runs 100
+  replacement_prefix: $
+  results_file:  /home/arindam/moving_agents/result.txt
+  prefix_commands: ["cd ~/moving_agents", "source .venv/bin/activate"]
 
 
 simulator:
 
-  parameter_of_interest: rho
+  parameter_of_interest: msf
   result_dimension: 0
-  range: [2, 20]
-  n_simulation_points: 10
+  range: [1, 5]
+  n_simulation_points: 5
   sampling_method: latin_hypercube
 
 
