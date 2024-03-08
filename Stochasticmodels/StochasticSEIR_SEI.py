@@ -274,7 +274,7 @@ if __name__ == "__main__":
 
     args=parser.parse_args()
     events=run_simulation(args)
-    save_path = '../Data/'
+    save_path = './'
     with open(save_path+'SEIR_SEI_events.csv', 'w') as f:
         for event in events:
             f.write(str(event)+'\n')
