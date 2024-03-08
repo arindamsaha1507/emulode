@@ -96,11 +96,7 @@ class ODESolver(Solver):
     def evaluate_at_point(self, parameter: float) -> float:
         """Evaluate the quantity of interest for the given parameter."""
 
-        if self.parameter_of_interest is None or self.quantity_of_interest is None:
-            raise ValueError("Parameter and quantity of interest not set")
-
         self.params[self.parameter_of_interest] = parameter
-
         self.solve()
         return self.quantity_of_interest(self.results[self.result_dimension, :])
 
@@ -130,15 +126,15 @@ class CommandlineSolver(Solver):
         print(f"Running command: {command}")
         os.system(command)
 
-    def set_varying_settings(
-        self, parameter: str, qoi: Callable = None, result_dim: int = None
-    ) -> None:
-        """Set the parameter and quantity of interest."""
-        raise NotImplementedError("Command line arguments not supported yet")
+        with open(self.results_file, "r", encoding="utf-8") as file:
+            self.results = np.array([float(line) for line in file.readlines()])
 
     def evaluate_at_point(self, parameter: float) -> float:
         """Evaluate the quantity of interest for the given parameter."""
-        raise NotImplementedError("Command line arguments not supported yet")
+
+        self.params[self.parameter_of_interest] = parameter
+        self.solve()
+        return self.quantity_of_interest(self.results[self.result_dimension])
 
 
 class SolverFactory:
@@ -161,24 +157,44 @@ class SolverFactory:
         )
 
     @staticmethod
-    def create_from_commandline_arguments(
-        ode_factory: ODE, args: argparse.Namespace
-    ) -> Solver:
+    def create_from_commandline_arguments(configs: Configs) -> CommandlineSolver:
         """Create a solver from the given command line arguments."""
 
         raise NotImplementedError("Command line arguments not supported yet")
 
 
-if __name__ == "__main__":
+def testing() -> None:
+    """Test the solver."""
 
     run_command = "python moving_agents.py --mode $mode --movement_scale_factor $msf --num_runs 100"
     params = {"mode": 1, "msf": 2}
     replacement_prefix = "$"
-    results_file = "results.txt"
+    results_file = "/home/arindam/moving_agents/result.txt"
+    parameter_of_interest = "msf"
 
     prefix_commands = ["cd ~/moving_agents", "source .venv/bin/activate"]
+
+    solver = CommandlineSolver(
+        params,
+        parameter_of_interest,
+        0,
+        QoI.max_value,
+        run_command,
+        replacement_prefix,
+        results_file,
+        prefix_commands,
+    )
+
+    # solver.solve()
+    # print(solver.results)
+
+    print(solver.evaluate_at_point(2.5))
 
     # solver = CommandlineSolver(
     #     params, run_command, replacement_prefix, results_file, prefix_commands
     # )
     # solver.solve()
+
+
+if __name__ == "__main__":
+    testing()
