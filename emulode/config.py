@@ -76,19 +76,24 @@ class ODEConfig(Config):
     """
 
     def __init__(
-        self, config_dict: dict, chosen_ode: str = None, parameters: dict = None
+        self,
+        config_dict: dict,
+        mode: str = None,
+        name: str = None,
+        parameters: dict = None,
     ) -> None:
 
-        required_keys = ["chosen_ode", "parameters"]
-        self.chosen_ode: str = chosen_ode
+        required_keys = ["mode", "name", "parameters"]
+        self.mode: str = mode
+        self.name: str = name
         self.parameters: dict = parameters
 
         super().__init__(config_dict, required_keys)
 
-        if self.chosen_ode is None:
+        if self.mode is None:
             raise ValueError("Chosen ODE not found")
 
-        self.parameters = config_dict["parameters"][self.chosen_ode]
+        self.parameters = config_dict["parameters"]
 
     def validate(self) -> None:
         """Validate the data."""
@@ -105,7 +110,7 @@ class ODEConfig(Config):
 
         return (
             f"ODE System\n===========\n"
-            f"Chosen ODE: {self.chosen_ode}\n"
+            f"Chosen ODE: {self.mode}\n"
             f"Parameters: {self.parameters}\n"
         )
 
@@ -417,7 +422,7 @@ class Configs:
 
     config_file: os.PathLike
 
-    ode: ODEConfig = field(init=False)
+    simulation: ODEConfig = field(init=False)
     solver: SolverConfig = field(init=False)
     simulator: SimulatorConfig = field(init=False)
     emulator: EmulatorConfig = field(init=False)
@@ -434,7 +439,7 @@ class Configs:
         with open(self.config_file, "r", encoding="utf-8") as file:
             config_dict = yaml.safe_load(file)
 
-        self.ode = ODEConfig(config_dict["ode"])
+        self.simulation = ODEConfig(config_dict["simulation"])
         self.solver = SolverConfig(config_dict["solver"])
         self.simulator = SimulatorConfig(config_dict["simulator"])
         self.emulator = EmulatorConfig(config_dict["emulator"])
@@ -443,7 +448,7 @@ class Configs:
     def individual_validate(self) -> None:
         """Validate the data."""
 
-        self.ode.validate()
+        self.simulation.validate()
         self.solver.validate()
         self.simulator.validate()
         self.emulator.validate()
@@ -453,7 +458,7 @@ class Configs:
         """Return a string representation of the configuration file."""
 
         return (
-            f"{self.ode}\n"
+            f"{self.simulation}\n"
             f"{self.solver}\n"
             f"{self.simulator}\n"
             f"{self.emulator}\n"

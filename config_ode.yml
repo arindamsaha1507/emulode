@@ -1,18 +1,12 @@
-ode:
+simulation:
 
-  chosen_ode: Lorenz
+  mode: ODE
+  name: Lorenz
 
   parameters:
-
-    Lorenz:
-      sigma: 10
-      rho: 28
-      beta: 2.667
-
-    Rossler:
-      a: 0.2
-      b: 0.2
-      c: 5.7
+    sigma: 10
+    rho: 28
+    beta: 2.667
 
 solver:
 
