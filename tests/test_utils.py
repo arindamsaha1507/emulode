@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from emulode.ode import DimensionError, ParameterError, Utils
+from redundant.ode import DimensionError, ParameterError, Utils
 
 
 def test_check_parameters_passing():

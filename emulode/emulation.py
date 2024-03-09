@@ -70,7 +70,6 @@ class EmulationFactory:
 
         configs = Configs(config_file)
 
-        # ode = ODEFactory.create_from_config(configs)
         solver = SolverFactory.create_from_commandline_arguments(configs)
         simulator = SimulatorFactory.create_from_config(solver, configs)
         emulator = EmulatorFactory.create_from_config(simulator, configs)
