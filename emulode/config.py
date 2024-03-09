@@ -61,60 +61,6 @@ class Config(ABC):
                 raise KeyError(f"Key '{key}' not found in config file")
 
 
-class SimulationConfig(Config):
-    """
-    Class for the ODE configuration file.
-
-    This class contains the chosen ODE and the parameters for the chosen ODE. The
-    `required_keys` for this class are "chosen_ode" and "parameters".
-
-    Args:
-        config_dict: The dictionary representation of the 'ode' part of the configuration file
-
-        chosen_ode: The chosen ODE
-        parameters: The parameters for the chosen ODE
-    """
-
-    def __init__(
-        self,
-        config_dict: dict,
-        mode: str = None,
-        name: str = None,
-        parameters: dict = None,
-    ) -> None:
-
-        required_keys = ["mode", "name", "parameters"]
-        self.mode: str = mode
-        self.name: str = name
-        self.parameters: dict = parameters
-
-        super().__init__(config_dict, required_keys)
-
-        if self.mode is None:
-            raise ValueError("Chosen ODE not found")
-
-        self.parameters = config_dict["parameters"]
-
-    def validate(self) -> None:
-        """Validate the data."""
-
-        if not isinstance(self.parameters, dict):
-            raise ValueError("Parameters must be a dictionary")
-
-        for key, value in self.parameters.items():
-            if not isinstance(value, (int, float)):
-                raise ValueError(f"Parameter {key} must be a number")
-
-    def __repr__(self) -> str:
-        """Return a string representation of the configuration file."""
-
-        return (
-            f"ODE System\n===========\n"
-            f"Chosen ODE: {self.mode}\n"
-            f"Parameters: {self.parameters}\n"
-        )
-
-
 class SolverConfig(Config):
     """
     Class for the solver configuration file.
@@ -135,6 +81,7 @@ class SolverConfig(Config):
         self,
         config_dict: dict,
         run_command: str = None,
+        parameters: dict = None,
         replacement_prefix: str = None,
         results_file: os.PathLike = None,
         prefix_commands: list[str] = None,
@@ -148,12 +95,14 @@ class SolverConfig(Config):
 
         required_keys = [
             "run_command",
+            "parameters",
             "replacement_prefix",
             "results_file",
             "prefix_commands",
         ]
 
         self.run_command: str = run_command
+        self.parameters: dict = parameters
         self.replacement_prefix: str = replacement_prefix
         self.results_file: os.PathLike = results_file
         self.prefix_commands: list[str] = prefix_commands
@@ -167,11 +116,12 @@ class SolverConfig(Config):
     def __repr__(self) -> str:
 
         return (
-            "Solver\n======\n"
-            # f"Initial conditions: {self.initial_conditions}\n"
-            # f"Time range: {self.t_range}\n"
-            # f"Number of steps: {self.n_steps}\n"
-            # f"Transience: {self.transience}\n"
+            f"Solver\n======\n"
+            f"Run command: {self.run_command}\n"
+            f"Parameters: {self.parameters}\n"
+            f"Replacement prefix: {self.replacement_prefix}\n"
+            f"Results file: {self.results_file}\n"
+            f"Prefix commands: {self.prefix_commands}\n"
         )
 
 
@@ -398,7 +348,7 @@ class Configs:
 
     config_file: os.PathLike
 
-    simulation: SimulationConfig = field(init=False)
+    # simulation: SimulationConfig = field(init=False)
     solver: SolverConfig = field(init=False)
     simulator: SimulatorConfig = field(init=False)
     emulator: EmulatorConfig = field(init=False)
@@ -415,7 +365,7 @@ class Configs:
         with open(self.config_file, "r", encoding="utf-8") as file:
             config_dict = yaml.safe_load(file)
 
-        self.simulation = SimulationConfig(config_dict["simulation"])
+        # self.simulation = SimulationConfig(config_dict["simulation"])
         self.solver = SolverConfig(config_dict["solver"])
         self.simulator = SimulatorConfig(config_dict["simulator"])
         self.emulator = EmulatorConfig(config_dict["emulator"])
@@ -424,7 +374,7 @@ class Configs:
     def individual_validate(self) -> None:
         """Validate the data."""
 
-        self.simulation.validate()
+        # self.simulation.validate()
         self.solver.validate()
         self.simulator.validate()
         self.emulator.validate()
@@ -434,7 +384,7 @@ class Configs:
         """Return a string representation of the configuration file."""
 
         return (
-            f"{self.simulation}\n"
+            # f"{self.simulation}\n"
             f"{self.solver}\n"
             f"{self.simulator}\n"
             f"{self.emulator}\n"

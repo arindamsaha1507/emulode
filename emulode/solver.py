@@ -10,8 +10,6 @@ import numpy as np
 from emulode.config import Configs
 from emulode.qoi import QoI
 
-# from emulode.plotter import Plotter
-
 
 @dataclass
 class Solver(ABC):
@@ -78,7 +76,7 @@ class SolverFactory:
         """Create a solver from the given command line arguments."""
 
         rum_command = configs.solver.run_command
-        params = configs.simulation.parameters
+        params = configs.solver.parameters
         replacement_prefix = configs.solver.replacement_prefix
         results_file = configs.solver.results_file
         prefix_commands = configs.solver.prefix_commands
@@ -101,40 +99,3 @@ class SolverFactory:
         """Create a solver for HPC simulation."""
 
         raise NotImplementedError("Solver for HPC simulation is not implemented yet.")
-
-
-def testing() -> None:
-    """Test the solver."""
-
-    run_command = "python moving_agents.py --mode $mode --movement_scale_factor $msf --num_runs 100"
-    params = {"mode": 1, "msf": 2}
-    replacement_prefix = "$"
-    results_file = "/home/arindam/moving_agents/result.txt"
-    parameter_of_interest = "msf"
-
-    prefix_commands = ["cd ~/moving_agents", "source .venv/bin/activate"]
-
-    solver = CommandlineSolver(
-        params,
-        parameter_of_interest,
-        0,
-        QoI.max_value,
-        run_command,
-        replacement_prefix,
-        results_file,
-        prefix_commands,
-    )
-
-    # solver.solve()
-    # print(solver.results)
-
-    print(solver.evaluate_at_point(2.5))
-
-    # solver = CommandlineSolver(
-    #     params, run_command, replacement_prefix, results_file, prefix_commands
-    # )
-    # solver.solve()
-
-
-if __name__ == "__main__":
-    testing()

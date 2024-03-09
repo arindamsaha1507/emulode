@@ -1,15 +1,11 @@
-simulation:
+solver:
 
-  mode: ODE
-  name: Lorenz
+  run_command: python moving_agents.py --mode $mode --movement_scale_factor $msf --num_runs 100
 
   parameters:
     mode: 1
     msf: 1.0
-
-solver:
-
-  run_command: python moving_agents.py --mode $mode --movement_scale_factor $msf --num_runs 100
+  
   replacement_prefix: $
   results_file:  /home/arindam/moving_agents/result.txt
   prefix_commands: ["cd ~/moving_agents", "source .venv/bin/activate"]
