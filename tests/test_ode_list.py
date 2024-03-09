@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from emulode.ode import ODEList
+from redundant.ode import ODEList
 
 
 def test_lorenz_passing():

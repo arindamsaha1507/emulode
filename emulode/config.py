@@ -61,55 +61,6 @@ class Config(ABC):
                 raise KeyError(f"Key '{key}' not found in config file")
 
 
-class ODEConfig(Config):
-    """
-    Class for the ODE configuration file.
-
-    This class contains the chosen ODE and the parameters for the chosen ODE. The
-    `required_keys` for this class are "chosen_ode" and "parameters".
-
-    Args:
-        config_dict: The dictionary representation of the 'ode' part of the configuration file
-
-        chosen_ode: The chosen ODE
-        parameters: The parameters for the chosen ODE
-    """
-
-    def __init__(
-        self, config_dict: dict, chosen_ode: str = None, parameters: dict = None
-    ) -> None:
-
-        required_keys = ["chosen_ode", "parameters"]
-        self.chosen_ode: str = chosen_ode
-        self.parameters: dict = parameters
-
-        super().__init__(config_dict, required_keys)
-
-        if self.chosen_ode is None:
-            raise ValueError("Chosen ODE not found")
-
-        self.parameters = config_dict["parameters"][self.chosen_ode]
-
-    def validate(self) -> None:
-        """Validate the data."""
-
-        if not isinstance(self.parameters, dict):
-            raise ValueError("Parameters must be a dictionary")
-
-        for key, value in self.parameters.items():
-            if not isinstance(value, (int, float)):
-                raise ValueError(f"Parameter {key} must be a number")
-
-    def __repr__(self) -> str:
-        """Return a string representation of the configuration file."""
-
-        return (
-            f"ODE System\n===========\n"
-            f"Chosen ODE: {self.chosen_ode}\n"
-            f"Parameters: {self.parameters}\n"
-        )
-
-
 class SolverConfig(Config):
     """
     Class for the solver configuration file.
@@ -129,68 +80,48 @@ class SolverConfig(Config):
     def __init__(
         self,
         config_dict: dict,
-        initial_conditions: list[float] = None,
-        t_range: list[float] = None,
-        n_steps: int = None,
-        transience: float = None,
+        run_command: str = None,
+        parameters: dict = None,
+        replacement_prefix: str = None,
+        results_file: os.PathLike = None,
+        prefix_commands: list[str] = None,
+        # initial_conditions: list[float] = None,
+        # t_range: list[float] = None,
+        # n_steps: int = None,
+        # transience: float = None,
     ) -> None:
 
         # pylint: disable=too-many-arguments
 
-        required_keys = ["initial_conditions", "t_range", "n_steps", "transience"]
-        self.initial_conditions: list[float] = initial_conditions
-        self.t_range: list[float] = t_range
-        self.n_steps: int = n_steps
-        self.transience: float = transience
+        required_keys = [
+            "run_command",
+            "parameters",
+            "replacement_prefix",
+            "results_file",
+            "prefix_commands",
+        ]
+
+        self.run_command: str = run_command
+        self.parameters: dict = parameters
+        self.replacement_prefix: str = replacement_prefix
+        self.results_file: os.PathLike = results_file
+        self.prefix_commands: list[str] = prefix_commands
 
         super().__init__(config_dict, required_keys)
 
-    @property
-    def t_initial(self) -> float:
-        """Return the initial time."""
-
-        return self.t_range[0]
-
-    @property
-    def t_final(self) -> float:
-        """Return the final time."""
-
-        return self.t_range[1]
-
     def validate(self) -> None:
 
-        if not isinstance(self.initial_conditions, list):
-            raise ValueError("Initial conditions must be a list")
-
-        if not isinstance(self.t_range, list):
-            raise ValueError("Time range must be a tuple")
-
-        if not isinstance(self.n_steps, int):
-            raise ValueError("Number of steps must be an integer")
-
-        if not isinstance(self.transience, float):
-            raise ValueError("Transience must be a float")
-
-        if len(self.t_range) != 2:
-            raise ValueError("Time range must have two elements")
-
-        if self.t_initial >= self.t_final:
-            raise ValueError("Initial time must be less than final time")
-
-        if self.n_steps <= 0:
-            raise ValueError("Number of steps must be positive")
-
-        if self.transience < 0 or self.transience > 1:
-            raise ValueError("Transience must be between 0 and 1")
+        pass
 
     def __repr__(self) -> str:
 
         return (
             f"Solver\n======\n"
-            f"Initial conditions: {self.initial_conditions}\n"
-            f"Time range: {self.t_range}\n"
-            f"Number of steps: {self.n_steps}\n"
-            f"Transience: {self.transience}\n"
+            f"Run command: {self.run_command}\n"
+            f"Parameters: {self.parameters}\n"
+            f"Replacement prefix: {self.replacement_prefix}\n"
+            f"Results file: {self.results_file}\n"
+            f"Prefix commands: {self.prefix_commands}\n"
         )
 
 
@@ -417,7 +348,7 @@ class Configs:
 
     config_file: os.PathLike
 
-    ode: ODEConfig = field(init=False)
+    # simulation: SimulationConfig = field(init=False)
     solver: SolverConfig = field(init=False)
     simulator: SimulatorConfig = field(init=False)
     emulator: EmulatorConfig = field(init=False)
@@ -434,7 +365,7 @@ class Configs:
         with open(self.config_file, "r", encoding="utf-8") as file:
             config_dict = yaml.safe_load(file)
 
-        self.ode = ODEConfig(config_dict["ode"])
+        # self.simulation = SimulationConfig(config_dict["simulation"])
         self.solver = SolverConfig(config_dict["solver"])
         self.simulator = SimulatorConfig(config_dict["simulator"])
         self.emulator = EmulatorConfig(config_dict["emulator"])
@@ -443,7 +374,7 @@ class Configs:
     def individual_validate(self) -> None:
         """Validate the data."""
 
-        self.ode.validate()
+        # self.simulation.validate()
         self.solver.validate()
         self.simulator.validate()
         self.emulator.validate()
@@ -453,7 +384,7 @@ class Configs:
         """Return a string representation of the configuration file."""
 
         return (
-            f"{self.ode}\n"
+            # f"{self.simulation}\n"
             f"{self.solver}\n"
             f"{self.simulator}\n"
             f"{self.emulator}\n"

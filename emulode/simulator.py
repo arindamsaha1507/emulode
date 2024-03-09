@@ -12,7 +12,7 @@ from scipy.stats import qmc
 from emulode.config import Configs
 from emulode.globals import Sampler
 from emulode.qoi import QoI
-from emulode.solver import ODESolver, Solver
+from emulode.solver import Solver
 
 
 @dataclass
@@ -21,7 +21,7 @@ class Simulator:
 
     # pylint: disable=too-many-instance-attributes
 
-    solver: ODESolver
+    solver: Solver
     varying_parameter: str
     result_dimension: int
     parameter_start: float
@@ -42,15 +42,12 @@ class Simulator:
         if self.num_points <= 0:
             raise ValueError("num_points must be positive")
 
-        if (
-            self.varying_parameter not in self.solver.params
-            and self.varying_parameter != "t"
-        ):
-            raise ValueError("varying_parameter must be a parameter of the ODE or 't'")
+        if self.varying_parameter not in self.solver.params:
+            raise ValueError("varying_parameter must be a parameter of the ODE")
 
-        self.solver.set_varying_settings(
-            self.varying_parameter, self.function_of_interest, self.result_dimension
-        )
+        # self.solver.set_varying_settings(
+        #     self.varying_parameter, self.function_of_interest, self.result_dimension
+        # )
 
         self.xdata, self.ydata = self.create_data()
 

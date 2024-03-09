@@ -195,8 +195,8 @@ class ODEFactory:
     def create_from_config(configs: Configs) -> ODE:
         """Create an ODE object from the given configs."""
 
-        function = ODEFactory.ode_function_chooser(configs.ode.chosen_ode)
-        parameters = configs.ode.parameters
+        function = ODEFactory.ode_function_chooser(configs.simulation.name)
+        parameters = configs.simulation.parameters
 
         return ODE(function, parameters)
 

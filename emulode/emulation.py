@@ -6,7 +6,6 @@ from typing import Optional
 
 from emulode.config import Configs
 
-from emulode.ode import ODE, ODEFactory
 from emulode.solver import Solver, SolverFactory
 from emulode.simulator import Simulator, SimulatorFactory
 from emulode.emulator import Emulator, EmulatorFactory
@@ -33,7 +32,6 @@ class Emulation:
     """
 
     configs: Configs
-    ode: ODE
     solver: Solver
     simulator: Simulator
     emulator: Emulator
@@ -72,16 +70,15 @@ class EmulationFactory:
 
         configs = Configs(config_file)
 
-        ode = ODEFactory.create_from_config(configs)
-        solver = SolverFactory.create_from_config(ode, configs)
+        solver = SolverFactory.create_from_commandline_arguments(configs)
         simulator = SimulatorFactory.create_from_config(solver, configs)
         emulator = EmulatorFactory.create_from_config(simulator, configs)
 
         if ideal_run:
             ideal = SimulatorFactory.create_from_config(solver, configs, ideal=True)
-            return Emulation(configs, ode, solver, simulator, emulator, ideal)
+            return Emulation(configs, solver, simulator, emulator, ideal)
 
-        return Emulation(configs, ode, solver, simulator, emulator)
+        return Emulation(configs, solver, simulator, emulator)
 
     @staticmethod
     def create_from_json_file(config_file: os.PathLike) -> Emulation:
