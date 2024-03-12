@@ -8,7 +8,15 @@ from scipy.stats import qmc
 from dimension_reduction.kuramoto_runner import run
 
 
-def rescale_parameters(parameters, scale_frequency, scale_coupling, scale_phase):
+def rescale_parameters(
+    parameters,
+    shift_frequency,
+    shift_coupling,
+    shift_phase,
+    scale_frequency,
+    scale_coupling,
+    scale_phase,
+):
     """Rescale the parameters to the correct range.
 
     Args:
@@ -26,11 +34,11 @@ def rescale_parameters(parameters, scale_frequency, scale_coupling, scale_phase)
 
     for index, parameter in enumerate(parameters):
         if index < num_oscillators:
-            parameters[index] = parameter * scale_frequency
+            parameters[index] = parameter * scale_frequency + shift_frequency
         elif index < num_oscillators + num_oscillators**2:
-            parameters[index] = parameter * scale_coupling
+            parameters[index] = parameter * scale_coupling + shift_coupling
         else:
-            parameters[index] = parameter * scale_phase
+            parameters[index] = parameter * scale_phase + shift_phase
 
     return parameters
 
@@ -44,29 +52,36 @@ def main():
     num_oscillators = 3
     length = num_oscillators + num_oscillators**2 + num_oscillators
 
+    shift_frequency = 0
+    shift_coupling = 0
+    shift_phase = 0
+
+    rescale_frequency = 1
+    rescale_coupling = 1
+    rescale_phase = 2 * np.pi
+
     time_start = time.time()
 
     # ed = mogp_emulator.LatinHypercubeDesign(length)
 
     sampler = qmc.LatinHypercube(d=length)
-    sample = sampler.random(n=100)
+    sample = sampler.random(n=200)
     inputs = qmc.scale(sample, 0, 1)
 
     print(len(inputs))
 
-    inputs = [rescale_parameters(p, 10, 1, 2 * np.pi) for p in inputs]
-
-    # for input in inputs:
-
-    #     for index, parameter in enumerate(input):
-    #         if index < num_oscillators:
-    #             input[index] = parameter * 10
-    #         elif index < num_oscillators + num_oscillators**2:
-    #             input[index] = parameter
-    #         else:
-    #             input[index] = parameter * 2 * np.pi
-
-    # exit()
+    inputs = [
+        rescale_parameters(
+            p,
+            shift_frequency,
+            shift_coupling,
+            shift_phase,
+            rescale_frequency,
+            rescale_coupling,
+            rescale_phase,
+        )
+        for p in inputs
+    ]
 
     targets = np.array([run(p) for p in inputs])
 
@@ -95,19 +110,20 @@ def main():
 
     time_start = time.time()
 
-    predict_points = qmc.scale(sampler.random(n=10), 0, 1)
+    predict_points = qmc.scale(sampler.random(n=1000), 0, 1)
 
-    predict_points = [rescale_parameters(p, 10, 1, 2 * np.pi) for p in predict_points]
-
-    # for input in predict_points:
-
-    #     for index, parameter in enumerate(input):
-    #         if index < num_oscillators:
-    #             input[index] = parameter * 10
-    #         elif index < num_oscillators + num_oscillators**2:
-    #             input[index] = parameter
-    #         else:
-    #             input[index] = parameter * 2 * np.pi
+    predict_points = [
+        rescale_parameters(
+            p,
+            shift_frequency,
+            shift_coupling,
+            shift_phase,
+            rescale_frequency,
+            rescale_coupling,
+            rescale_phase,
+        )
+        for p in predict_points
+    ]
 
     predict_actual = np.array([run(p) for p in predict_points])
 
@@ -115,11 +131,10 @@ def main():
 
     means = gp_tuned(dr_tuned(predict_points))
 
-    for pp, m, a in zip(predict_points, means, predict_actual):
-        # print("Target point: {} Predicted mean: {} Actual mean: {}".format(pp, m, a))
-        print("Predicted mean: {} Actual mean: {}".format(m, a))
-
-    print(dr_tuned(predict_points))
+    for m, a in zip(means, predict_actual):
+        print(
+            f"Predicted mean: {m} Actual mean: {a} Error: {abs(m - a)} Percent error: {abs(m - a) / a * 100}"
+        )
 
 
 if __name__ == "__main__":

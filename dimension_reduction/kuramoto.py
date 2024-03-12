@@ -23,6 +23,7 @@ def kuramoto_ode(time: float, theta: list[float], params: dict) -> list[float]:
         dtheta[i] = natural_frequencies[i]
         for j in range(num_oscillators):
             dtheta[i] += coupling[i, j] * np.sin(theta[j] - theta[i])
+            dtheta[i] = dtheta[i] % (2 * np.pi)
 
     return dtheta
 
@@ -117,8 +118,6 @@ def main():
     result = solve_kuramoto(solver_params)
     r_value = np.mean(np.exp(1j * result))
     r_value = np.abs(r_value)
-
-    print(r_value)
 
     with open("kuramoto_output.txt", "w", encoding="utf-8") as file:
         file.write(str(r_value))
