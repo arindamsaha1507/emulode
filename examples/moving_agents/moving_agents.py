@@ -15,6 +15,7 @@ BLUE = (0, 0, 255)
 
 @dataclass
 class Room:
+    """Class for the room where the agents move."""
 
     width: int
     height: int
@@ -24,12 +25,14 @@ class Room:
 
     @staticmethod
     def levy_walk(agent, angle, step):
+        """Move the agent in a Levy walk."""
 
         agent["x"] += step * math.cos(angle)
         agent["y"] += step * math.sin(angle)
 
     @staticmethod
     def random_walk(agent, angle, step):
+        """Move the agent in a random walk."""
 
         if angle < math.pi / 2:
             agent["x"] += step
@@ -42,11 +45,13 @@ class Room:
 
     @staticmethod
     def brownian_motion(agent, angle, step):
+        """Move the agent in a Brownian motion."""
 
         agent["x"] += step * math.cos(angle)
         agent["y"] += step * math.sin(angle)
 
     def evolve(self, mode, movement_scale_factor):
+        """Evolve the agents in the room."""
 
         agents = []
         for agent_idx in range(self.number_of_agents):
@@ -117,6 +122,9 @@ def single_run(
     room_height,
     neighbourhood_size,
 ):
+    """Run the simulation once."""
+
+    # pylint: disable=too-many-arguments
 
     room = Room(room_width, room_height, neighbourhood_size, num_agents, time)
 
@@ -135,7 +143,10 @@ def multi_run(
     num_runs,
     seed=None,
 ):
-    
+    """Run the simulation multiple times."""
+
+    # pylint: disable=too-many-arguments
+
     if seed:
         random.seed(seed)
         np.random.seed(seed)
