@@ -7,8 +7,8 @@ solver:
     msf: 1.0
   
   replacement_prefix: $
-  results_file:  /home/arindam/moving_agents/result.txt
-  prefix_commands: ["cd ~/moving_agents", "source .venv/bin/activate"]
+  results_file:  examples/moving_agents/result.txt
+  prefix_commands: ["cd examples/moving_agents"]
 
 
 simulator:
@@ -24,7 +24,7 @@ emulator:
 
   n_prediction_points: 1000
   n_iterations: 500
-  n_layers: 2
+  n_layers: 1
   kernel_function: matern2.5
  
 
