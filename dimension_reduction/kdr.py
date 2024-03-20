@@ -93,8 +93,8 @@ def main():
         inputs,
         targets,
         mogp_emulator.fit_GP_MAP,
-        cXs=[3.0],
-        cYs=[3.0],
+        cXs=[1.0, 0.5, 3.0],
+        cYs=[1.0, 0.5, 3.0],
     )
 
     print(f"Number of inferred dimensions is {dr_tuned.K}")
