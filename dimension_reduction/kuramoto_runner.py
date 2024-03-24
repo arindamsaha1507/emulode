@@ -13,7 +13,7 @@ def kuramoto_wrapper(arguments: list[float]) -> None:
     command = "python dimension_reduction/kuramoto.py"
 
     time_start = 0
-    time_end = 100
+    time_end = 10
 
     num_oscillators = np.sqrt(1 + len(arguments)) - 1
 

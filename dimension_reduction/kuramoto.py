@@ -1,126 +1,94 @@
-"""Module to solve a network of Kuramoto oscillators."""
-
 import argparse
-from attr import dataclass
-
 import numpy as np
-
 from scipy.integrate import solve_ivp
+import matplotlib.pyplot as plt
 
 
-def kuramoto_ode(time: float, theta: list[float], params: dict) -> list[float]:
-    """Return the derivative of the Kuramoto ODE."""
-
-    # pylint: disable=unused-argument
-
-    coupling: np.ndarray = params["coupling"]
-    natural_frequencies: np.ndarray = params["natural_frequencies"]
-    num_oscillators: int = params["num_oscillators"]
-
-    dtheta: np.ndarray = np.zeros(num_oscillators)
-
+def kuramoto_ode(t, theta, coupling, natural_frequencies):
+    num_oscillators = len(natural_frequencies)
+    dtheta = np.zeros(num_oscillators)
     for i in range(num_oscillators):
         dtheta[i] = natural_frequencies[i]
         for j in range(num_oscillators):
             dtheta[i] += coupling[i, j] * np.sin(theta[j] - theta[i])
-            dtheta[i] = dtheta[i] % (2 * np.pi)
-
     return dtheta
 
 
-def solve_kuramoto(params: dict) -> np.ndarray:
-    """Solve the Kuramoto ODE."""
-
-    initial_conditions: np.ndarray = params["initial_conditions"]
-    time_span: tuple[float, float] = params["time_span"]
-    # num_oscillators: int = params["num_oscillators"]
-
-    result = solve_ivp(
-        kuramoto_ode,
-        time_span,
-        initial_conditions,
-        args=(params,),
-        method="RK45",
-        t_eval=np.linspace(time_span[0], time_span[1], 1000),
-    )
-
-    return result.y[:, -1]
-
-
-@dataclass
-class KuramotoParams:
-    """Dataclass for the parameters of the Kuramoto model."""
-
-    coupling: list[float]
-    natural_frequencies: list[float]
-    initial_conditions: list[float]
-    time_span: list[float]
-    num_oscillators: int
-
-
-def parse_args() -> KuramotoParams:
-    """Parse the command line arguments."""
-
-    parser = argparse.ArgumentParser(description="Solve the Kuramoto ODE.")
+def main():
+    parser = argparse.ArgumentParser(description="Solve the Kuramoto model.")
     parser.add_argument(
-        "--coupling",
+        "--time_span",
         type=float,
-        nargs="+",
-        help="The coupling matrix for the Kuramoto ODE.",
+        nargs=2,
+        required=True,
+        help="Start and end of the time interval.",
+    )
+    parser.add_argument(
+        "--num_oscillators", type=int, required=True, help="Number of oscillators."
     )
     parser.add_argument(
         "--natural_frequencies",
         type=float,
         nargs="+",
-        help="The natural frequencies for the Kuramoto ODE.",
+        required=True,
+        help="Natural frequencies of oscillators.",
+    )
+    parser.add_argument(
+        "--coupling",
+        type=float,
+        nargs="+",
+        required=True,
+        help="Coupling strengths between oscillators.",
     )
     parser.add_argument(
         "--initial_conditions",
         type=float,
         nargs="+",
-        help="The initial conditions for the Kuramoto ODE.",
-    )
-    parser.add_argument(
-        "--time_span", type=float, nargs=2, help="The time span for the Kuramoto ODE."
-    )
-    parser.add_argument(
-        "--num_oscillators",
-        type=int,
-        help="The number of oscillators in the Kuramoto ODE.",
+        help="Initial phases of oscillators.",
+        default=None,
     )
 
     args = parser.parse_args()
 
-    return KuramotoParams(
-        coupling=args.coupling,
-        natural_frequencies=args.natural_frequencies,
-        initial_conditions=args.initial_conditions,
-        time_span=args.time_span,
-        num_oscillators=args.num_oscillators,
+    if args.initial_conditions is None:
+        args.initial_conditions = np.random.uniform(0, 2 * np.pi, args.num_oscillators)
+
+    if len(args.coupling) != args.num_oscillators**2:
+        raise ValueError("The number of coupling values must be num_oscillators^2")
+
+    coupling_matrix = np.array(args.coupling).reshape(
+        args.num_oscillators, args.num_oscillators
+    )
+    natural_frequencies = np.array(args.natural_frequencies)
+    initial_conditions = np.array(args.initial_conditions)
+
+    result = solve_ivp(
+        kuramoto_ode,
+        args.time_span,
+        initial_conditions,
+        args=(coupling_matrix, natural_frequencies),
+        t_eval=np.linspace(args.time_span[0], args.time_span[1], 1000),
     )
 
-
-def main():
-    """Run the main function."""
-
-    params = parse_args()
-
-    solver_params = {
-        "coupling": np.array(params.coupling).reshape(
-            params.num_oscillators, params.num_oscillators
-        ),
-        "natural_frequencies": np.array(params.natural_frequencies),
-        "initial_conditions": np.array(params.initial_conditions),
-        "time_span": tuple(params.time_span),
-        "num_oscillators": params.num_oscillators,
-    }
-
-    result = solve_kuramoto(solver_params)
-    r_value = np.mean(np.exp(1j * result))
-    r_value = np.abs(r_value)
+    res = result.y[:, -1]
+    # print(res)
+    r_value = np.abs(np.mean(np.exp(1j * res)))
+    # print(r_value)
 
     with open("kuramoto_output.txt", "w", encoding="utf-8") as file:
         file.write(str(r_value))
+
+    # Plot the result
+    # plt.figure()
+    # for i in range(args.num_oscillators):
+    #     plt.plot(result.t, np.sin(result.y[i]), label=f"Oscillator {i+1}")
+    # plt.xlabel("Time")
+    # plt.ylabel("sin(θ)")
+    # plt.title("Time Evolution of sin(θ)")
+    # plt.legend()
+    # plt.grid()
+    # plt.savefig("kuramoto_output.png")
+    # plt.show()
 
 
 if __name__ == "__main__":
