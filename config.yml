@@ -1,20 +1,22 @@
 solver:
 
-  run_command: python logistic_lyap.py --r $r
+  run_command: python lorenz_lyap.py --rho $rho --beta $beta --sigma $sigma
 
   parameters:
-    r: 1.5
+    rho: 28
+    beta: 2.3333
+    sigma: 10
   
   replacement_prefix: $
-  results_file:  examples/logistic_lyapunov/lyapunov_exponent.txt
-  prefix_commands: ["cd examples/logistic_lyapunov"]
+  results_file:  examples/lorenz_lyapunov/lyapunov_exponent.txt
+  prefix_commands: ["cd examples/lorenz_lyapunov"]
 
 
 simulator:
 
-  parameter_of_interest: r
+  parameter_of_interest: rho
   result_dimension: 0
-  range: [0, 4]
+  range: [0, 30]
   n_simulation_points: 10
   sampling_method: latin_hypercube
 
