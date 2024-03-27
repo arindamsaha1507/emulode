@@ -1,30 +1,29 @@
 solver:
 
-  run_command: python moving_agents.py --mode $mode --movement_scale_factor $msf --num_runs 100
+  run_command: python logistic_lyap.py --r $r
 
   parameters:
-    mode: 1
-    msf: 1.0
+    r: 1.5
   
   replacement_prefix: $
-  results_file:  examples/moving_agents/result.txt
-  prefix_commands: ["cd examples/moving_agents"]
+  results_file:  examples/logistic_lyapunov/lyapunov_exponent.txt
+  prefix_commands: ["cd examples/logistic_lyapunov"]
 
 
 simulator:
 
-  parameter_of_interest: msf
+  parameter_of_interest: r
   result_dimension: 0
-  range: [1, 5]
-  n_simulation_points: 5
+  range: [0, 4]
+  n_simulation_points: 10
   sampling_method: latin_hypercube
 
 
 emulator:
 
-  n_prediction_points: 1000
+  n_prediction_points: 100
   n_iterations: 500
-  n_layers: 1
+  n_layers: 2
   kernel_function: matern2.5
  
 
