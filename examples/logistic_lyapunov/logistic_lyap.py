@@ -64,6 +64,7 @@ def plotter():
 
 
 def main():
+    """Main function for the script."""
 
     args = argparse.ArgumentParser(
         description="Compute the Lyapunov exponent of the logistic map."

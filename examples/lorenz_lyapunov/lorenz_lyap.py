@@ -1,21 +1,25 @@
+"""Module to compute the Lyapunov exponents of the Lorenz system."""
+
 import argparse
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
 
 def lorenz_system(t, X, sigma, beta, rho):
-    """
-    Lorenz system of differential equations.
-    """
+    """Lorenz system of differential equations."""
+
+    # pylint: disable=unused-argument
+    # pylint: disable=invalid-name
+
     x, y, z = X
     return [sigma * (y - x), x * (rho - z) - y, x * y - beta * z]
 
 
 def jacobian_lorenz(X, sigma, beta, rho):
-    """
-    Jacobian of the Lorenz system.
-    """
+    """Jacobian of the Lorenz system."""
+
+    # pylint: disable=invalid-name
+
     x, y, z = X
     return np.array([[-sigma, sigma, 0], [rho - z, -1, -x], [y, x, -beta]])
 
@@ -23,11 +27,17 @@ def jacobian_lorenz(X, sigma, beta, rho):
 def compute_lyapunov_exponents(
     initial_condition, t_max, dt, sigma, beta, rho, n_exponents=3
 ):
-    """
-    Compute the Lyapunov exponents for the Lorenz system.
-    """
+    """Compute the Lyapunov exponents for the Lorenz system."""
+
+    # pylint: disable=too-many-arguments
+    # pylint: disable=invalid-name
+    # pylint: disable=unused-variable
 
     def equations(t, Y):
+        """Equations of motion for the Lyapunov exponents."""
+
+        # pylint: disable=invalid-name
+
         n = len(Y) // (n_exponents + 1)
         X = Y[:n]
         Q = Y[n:].reshape((n, n))
@@ -55,6 +65,8 @@ def compute_lyapunov_exponents(
 
 
 def main():
+    """The main function."""
+
     parser = argparse.ArgumentParser(
         description="Compute the Lyapunov exponents of the Lorenz system."
     )
